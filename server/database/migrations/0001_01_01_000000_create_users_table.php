@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->foreignId("team_id")->constrained("teams")->onDelete("cascade");
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
+            $table->string('avatar')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();

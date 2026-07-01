@@ -10,7 +10,7 @@ use App\Models\Script;
 
 class Team extends Model
 {
-    // protected $fillable = [];
+    protected $fillable = ['name', 'invite_code'];
 
     public function users(): HasMany
     {
