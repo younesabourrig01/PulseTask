@@ -15,6 +15,14 @@ class StartDataSeeder extends Seeder
      */
     public function run(): void
     {
+
+        //team 
+        Team::firstOrCreate([
+            'id' => 1,
+            'name' => 'Test Team',
+            'invite_code' => '12321312',
+        ]);
+
         //user 1
         User::firstOrCreate([
             'name' => 'user1',
@@ -31,13 +39,6 @@ class StartDataSeeder extends Seeder
             'email' => 'user2@email.com',
             'avatar' => null,
             'password' => bcrypt('user2'),
-        ]);
-
-        //team 
-        Team::firstOrCreate([
-            'id' => 1,
-            'name' => 'Test Team',
-            'invite_code' => '12321312',
         ]);
 
         //server
