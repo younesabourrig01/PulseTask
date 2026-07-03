@@ -13,7 +13,7 @@ class ScriptRunPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,7 +21,7 @@ class ScriptRunPolicy
      */
     public function view(User $user, ScriptRun $scriptRun): bool
     {
-        return false;
+        return $user->team_id === $scriptRun->script->team_id;
     }
 
     /**
@@ -37,7 +37,7 @@ class ScriptRunPolicy
      */
     public function update(User $user, ScriptRun $scriptRun): bool
     {
-        return false;
+        return $user->team_id === $scriptRun->script->team_id;
     }
 
     /**
@@ -45,7 +45,7 @@ class ScriptRunPolicy
      */
     public function delete(User $user, ScriptRun $scriptRun): bool
     {
-        return false;
+        return $user->team_id === $scriptRun->script->team_id;
     }
 
     /**
@@ -53,7 +53,7 @@ class ScriptRunPolicy
      */
     public function restore(User $user, ScriptRun $scriptRun): bool
     {
-        return false;
+        return $user->team_id === $scriptRun->script->team_id;
     }
 
     /**
@@ -61,6 +61,6 @@ class ScriptRunPolicy
      */
     public function forceDelete(User $user, ScriptRun $scriptRun): bool
     {
-        return false;
+        return $user->team_id === $scriptRun->script->team_id;
     }
 }

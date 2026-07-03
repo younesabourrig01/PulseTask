@@ -13,7 +13,7 @@ class UptimeCheckPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,7 +21,7 @@ class UptimeCheckPolicy
      */
     public function view(User $user, UptimeCheck $uptimeCheck): bool
     {
-        return false;
+        return $user->team_id === $uptimeCheck->server->team_id;
     }
 
     /**
@@ -37,7 +37,7 @@ class UptimeCheckPolicy
      */
     public function update(User $user, UptimeCheck $uptimeCheck): bool
     {
-        return false;
+        return $user->team_id === $uptimeCheck->server->team_id;
     }
 
     /**
@@ -45,7 +45,7 @@ class UptimeCheckPolicy
      */
     public function delete(User $user, UptimeCheck $uptimeCheck): bool
     {
-        return false;
+        return $user->team_id === $uptimeCheck->server->team_id;
     }
 
     /**
@@ -53,7 +53,7 @@ class UptimeCheckPolicy
      */
     public function restore(User $user, UptimeCheck $uptimeCheck): bool
     {
-        return false;
+        return $user->team_id === $uptimeCheck->server->team_id;
     }
 
     /**
@@ -61,6 +61,6 @@ class UptimeCheckPolicy
      */
     public function forceDelete(User $user, UptimeCheck $uptimeCheck): bool
     {
-        return false;
+        return $user->team_id === $uptimeCheck->server->team_id;
     }
 }
