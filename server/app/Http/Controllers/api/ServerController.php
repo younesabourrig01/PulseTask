@@ -53,6 +53,41 @@ class ServerController extends Controller
 
     }
 
+    public function update(Request $request, Server $server)
+    {
+
+        $validated = $request->validate([
+            'name' => 'string|min:3|required',
+            'ip_address' => 'string|required',
+            'ssh_user' => 'string|required',
+            'ssh_private_key' => 'string|required',
+            'status' => 'string'
+        ]);
+
+        $this->authorize('update', $server);
+
+        $server->update($validated);
+
+        return response()->json([
+            'status' => 'success',
+            'server' => $server
+        ]);
+    }
+
+    public function destroy(Request $request, Server $server)
+    {
+
+        $this->authorize('delete', $server);
+
+        $server->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'server deleted successfuly',
+            'server' => $server
+        ]);
+
+    }
     public function generateToken(Request $request)
     {
         $request->validate(['token_name' => 'required|string']);
