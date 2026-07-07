@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId("server_id")->constrained("servers")->onDelete("cascade");
             $table->string("url");
-            $table->integer("expected_status_code");
+            $table->integer("expected_status_code")->default(200);
             $table->boolean("is_enabled")->default(false);
             $table->timestamps();
         });
