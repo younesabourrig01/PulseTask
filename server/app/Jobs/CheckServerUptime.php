@@ -6,7 +6,7 @@ use App\Models\UptimeCheck;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\LogManager;
+// use Illuminate\Support\LogManager;
 
 class CheckServerUptime implements ShouldQueue
 {
@@ -25,14 +25,22 @@ class CheckServerUptime implements ShouldQueue
      */
     public function handle(): void
     {
-        if ($this->uptimeCheck->is_enabled) {
+        if (!$this->uptimeCheck->is_enabled) {
             return;
         }
+
+        $this->info("=== [START] Checking URL: " . $this->uptimeCheck->url . " ===");
 
         $startTime = microtime(true);
 
         try {
+
+            $this->info("-> Sending HTTP Request...");
+
             $response = Http::timeout(15)->get($this->uptimeCheck->url);
+
+            $this->info("-> Response received! Status: " . $response->status());
+
             $endtime = microtime(true);
 
             $responseTimeMs = round(($endtime - $startTime) * 1000);
@@ -48,7 +56,12 @@ class CheckServerUptime implements ShouldQueue
             $this->uptimeCheck->server->update([
                 'status' => $isUp ? 'online' : 'offline'
             ]);
+
+            $this->info("=== [SUCCESS] Log saved to DB ===");
         } catch (\Exception $e) {
+
+            $this->error("=== [ERROR] Caught exception: " . $e->getMessage() . " ===");
+
             $this->uptimeCheck->pingLogs()->create([
                 'status_code' => 0,
                 'response_time_ms' => 0,
@@ -59,5 +72,13 @@ class CheckServerUptime implements ShouldQueue
             $this->uptimeCheck->server->update(['status' => 'offline']);
 
         }
+    }
+    private function info($msg)
+    {
+        echo "\033[32m" . $msg . "\033[0m\n";
+    }
+    private function error($msg)
+    {
+        echo "\033[31m" . $msg . "\033[0m\n";
     }
 }

@@ -10,7 +10,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('uptimes_check', function (Blueprint $table) {
+        Schema::create('uptime_checks', function (Blueprint $table) {
             $table->id();
             $table->foreignId("server_id")->constrained("servers")->onDelete("cascade");
             $table->string("url");

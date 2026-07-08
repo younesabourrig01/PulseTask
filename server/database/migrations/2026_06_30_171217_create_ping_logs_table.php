@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('ping_logs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId("uptime_check_id")->constrained("uptimes_check")->cascadeOnDelete();
+            $table->foreignId("uptime_check_id")->constrained("uptime_checks")->cascadeOnDelete();
             $table->integer("status_code");
             $table->integer('response_time_ms');
             $table->boolean('is_up')->default(false);

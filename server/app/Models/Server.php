@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Server extends Model
 {
-    // protected $fillable = [];
+    protected $fillable = ['team_id', 'name', 'ip_address', 'ssh_user', 'ssh_private_key', 'status'];
     public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class);

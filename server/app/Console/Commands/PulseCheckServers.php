@@ -18,7 +18,9 @@ class PulseCheckServers extends Command
 
     public function handle()
     {
-        $checks = UptimeCheck::where('is_enabeld', true)->get();
+        $checks = UptimeCheck::where('is_enabled', true)->get();
+
+        $this->info("Found " . $checks->count() . " active checks in database.");
 
         foreach ($checks as $check) {
             CheckServerUptime::dispatch($check);
