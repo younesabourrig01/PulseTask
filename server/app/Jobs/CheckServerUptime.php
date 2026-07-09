@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\UptimeCheck;
+use App\Events\ServerStatusUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Http;
@@ -29,17 +30,17 @@ class CheckServerUptime implements ShouldQueue
             return;
         }
 
-        $this->info("=== [START] Checking URL: " . $this->uptimeCheck->url . " ===");
+        // $this->info("=== [START] Checking URL: " . $this->uptimeCheck->url . " ===");
 
         $startTime = microtime(true);
 
         try {
 
-            $this->info("-> Sending HTTP Request...");
+            // $this->info("-> Sending HTTP Request...");
 
             $response = Http::timeout(15)->get($this->uptimeCheck->url);
 
-            $this->info("-> Response received! Status: " . $response->status());
+            // $this->info("-> Response received! Status: " . $response->status());
 
             $endtime = microtime(true);
 
@@ -57,10 +58,12 @@ class CheckServerUptime implements ShouldQueue
                 'status' => $isUp ? 'online' : 'offline'
             ]);
 
-            $this->info("=== [SUCCESS] Log saved to DB ===");
+            event(new ServerStatusUpdated($this->uptimeCheck->server));
+
+            // $this->info("=== [SUCCESS] Log saved to DB ===");
         } catch (\Exception $e) {
 
-            $this->error("=== [ERROR] Caught exception: " . $e->getMessage() . " ===");
+            // $this->error("=== [ERROR] Caught exception: " . $e->getMessage() . " ===");
 
             $this->uptimeCheck->pingLogs()->create([
                 'status_code' => 0,
@@ -73,12 +76,12 @@ class CheckServerUptime implements ShouldQueue
 
         }
     }
-    private function info($msg)
-    {
-        echo "\033[32m" . $msg . "\033[0m\n";
-    }
-    private function error($msg)
-    {
-        echo "\033[31m" . $msg . "\033[0m\n";
-    }
+    // private function info($msg)
+    // {
+    //     echo "\033[32m" . $msg . "\033[0m\n";
+    // }
+    // private function error($msg)
+    // {
+    //     echo "\033[31m" . $msg . "\033[0m\n";
+    // }
 }
