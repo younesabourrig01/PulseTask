@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class UptimeCheck extends Model
 {
-    // protected $fillable = [];
+    protected $fillable = ['server_id', 'url', 'expected_status_code', 'is_enabled'];
 
     public function server(): BelongsTo
     {

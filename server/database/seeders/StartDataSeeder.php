@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Team;
 use App\Models\Server;
+use App\Models\UptimeCheck;
 
 class StartDataSeeder extends Seeder
 {
@@ -49,6 +50,14 @@ class StartDataSeeder extends Seeder
             'ssh_user' => 'sjx ss cdffmdsodm soddiwdjdmcm',
             'ssh_private_key' => 'sjx ss cdffmdsodm soddiwdjdmcm',
             'status' => 'running'
+        ]);
+
+        //uptime check 
+        UptimeCheck::firstOrCreate([
+            'server_id' => 1,
+            'url' => 'https://github.com/',
+            'expected_status_code' => 200,
+            'is_enabled' => 1
         ]);
     }
 }
