@@ -11,9 +11,9 @@ class ScriptRunPolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user): bool
+    public function viewAny(User $user, ScriptRun $scriptRun): bool
     {
-        return true;
+        return $user->team_id === $scriptRun->server->team_id;
     }
 
     /**

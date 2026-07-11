@@ -63,4 +63,9 @@ class ServerPolicy
     {
         return $user->team_id === $server->team_id;
     }
+
+    public function runScript(User $user, Server $server): bool
+    {
+        return $user->team_id === $server->team_id;
+    }
 }

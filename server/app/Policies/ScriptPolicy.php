@@ -63,4 +63,9 @@ class ScriptPolicy
     {
         return $user->team_id === $script->team_id;
     }
+
+    public function execute(User $user, Script $script): bool
+    {
+        return $user->team_id === $script->team_id;
+    }
 }

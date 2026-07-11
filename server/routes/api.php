@@ -1,5 +1,6 @@
 <?php
 use App\Http\Controllers\api\AuthController;
+use App\Http\Controllers\api\ScriptRunController;
 use App\Http\Controllers\api\ServerController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,9 +23,12 @@ Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
 
     //operations
     Route::get('/servers/{server}', [ServerController::class, 'show']);
-    Route::delete('servers/{server}', [ServerController::class, 'destroy']);
-    Route::patch('servers/{server}', [ServerController::class, 'update']);
+    Route::delete('/servers/{server}', [ServerController::class, 'destroy']);
+    Route::patch('/servers/{server}', [ServerController::class, 'update']);
 
     //token generate endpoint
     Route::post('/generate-token', [ServerController::class, 'generateToken']);
+
+    //run script 
+    Route::post('/run/{script}/on/{server}', [ScriptRunController::class, 'trigger']);
 });
