@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->string("ip_address");
             $table->string("ssh_user");
             $table->text("ssh_private_key");
+            $table->integer("ssh_port")->default(22);
             $table->string("status");
             $table->timestamps();
         });
