@@ -31,6 +31,41 @@ class ScriptRunController extends Controller
 
         ExecuteServerScript::dispatch($run);
 
-        return response()->json(['message' => 'Queued..., eyes on the logs']);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Execution queued...',
+            'run_id' => $run->id
+        ]);
+    }
+
+    public function triggerFromCli(Request $request)
+    {
+        $request->validate([
+            'ip_address' => 'required|string',
+            'script_slug' => 'required|string'
+        ]);
+
+        $user_id = $request->user()->id;
+
+        $server = Server::where('ip_address', $request->ip_address)->firstOrFail();
+        $script = Script::where('script_slug', $request->script_slug)->firstOrFail();
+
+        $this->authorize('execute', $script);
+        $this->authorize('runScript', $server);
+
+        $run = ScriptRun::create([
+            'script_id' => $script->id,
+            'server_id' => $server->id,
+            'user_id' => $user_id,
+            'status' => 'pending',
+        ]);
+
+        ExecuteServerScript::dispatch($run);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Execution queued via CLI...',
+            'run_id' => $run->id
+        ]);
     }
 }

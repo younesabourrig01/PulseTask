@@ -29,6 +29,10 @@ Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
     //token generate endpoint
     Route::post('/generate-token', [ServerController::class, 'generateToken']);
 
-    //run script 
+    #--run script endpoints
+    //run script in the application interface
     Route::post('/run/{script}/on/{server}', [ScriptRunController::class, 'trigger']);
+
+    //run script from cli 
+    Route::post('/cli/run-script', [ScriptRunController::class, 'triggerFromCli']);
 });

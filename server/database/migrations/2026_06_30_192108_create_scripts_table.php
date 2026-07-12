@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId("team_id")->constrained("teams")->cascadeOnDelete();
             $table->string("title");
+            $table->string('script_slug')->unique();
             $table->text("content");
             $table->timestamps();
         });
