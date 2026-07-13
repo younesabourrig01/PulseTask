@@ -35,4 +35,5 @@ Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
 
     //run script from cli 
     Route::post('/cli/run-script', [ScriptRunController::class, 'triggerFromCli']);
+    Route::get('/cli/run-status/{scriptRun}', [ScriptRunController::class, 'getStatusFromCli']);
 });

@@ -68,4 +68,15 @@ class ScriptRunController extends Controller
             'run_id' => $run->id
         ]);
     }
+
+    public function getStatusFromCli(ScriptRun $scriptRun)
+    {
+        $this->authorize('view', $scriptRun);
+        return response()->json([
+            'run_id' => $scriptRun->id,
+            'status' => $scriptRun->status,
+            'output' => $scriptRun->output,
+            'error' => $scriptRun->error_output
+        ]);
+    }
 }
