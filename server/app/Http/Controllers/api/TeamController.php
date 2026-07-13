@@ -5,9 +5,23 @@ namespace App\Http\Controllers\api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Team;
+use App\Models\User;
 
 class TeamController extends Controller
 {
+    public function teamInfo(Team $team)
+    {
+        $data = [
+            '$members' => $team->members,
+            '$name ' => $team->name,
+            '$owner' => User::where('id', $team->owner_id)->first(),
+        ];
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $data
+        ]);
+    }
     public function create(Request $request)
     {
         $user = $request->user();
@@ -41,7 +55,10 @@ class TeamController extends Controller
     {
         //
     }
+    public function generateInvCode(Team $team)
+    {
 
+    }
     public function leave(Request $request)
     {
         $user = $request->user();
