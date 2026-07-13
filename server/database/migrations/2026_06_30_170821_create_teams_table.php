@@ -13,7 +13,8 @@ return new class extends Migration {
         Schema::create('teams', function (Blueprint $table) {
             $table->id();
             $table->string("name");
-            $table->string('invite_code')->unique();
+            $table->string('invite_code')->nullable()->unique();
+            $table->integer('owner_id');
             $table->timestamps();
         });
     }

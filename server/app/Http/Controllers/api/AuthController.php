@@ -20,46 +20,27 @@ class AuthController extends Controller
             'name' => 'required|string|max|255',
             'email' => 'required|string|email|max|255|unique:users',
             'password' => 'required|string|min:8|confirmed',
-            'team_name' => 'required_without:invite_code|string|max:255',
-            'invite_code' => 'required_without:team_name|string',
             'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
         ]);
 
-        ['user' => $user, 'token' => $token] = DB::transaction(function () use ($request) {
+        $avatarPath = null;
 
-            if ($request->filled('team_name')) {
-                // case 1: User is creating a new team
-                $team = Team::create([
-                    "name" => $request->team_name
-                ]);
-            } else {
-                // case 2: User is joining an existing team
-                $team = Team::where('invite_code', $request->invite_code)->firstOrFail();
-            }
+        if ($request->hasFile('avatar')) {
+            $avatarPath = $request->file('avatar')->store('users', 'public');
+        }
 
-            $avatarPath = null;
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'avatar' => $avatarPath
+        ]);
 
-            if ($request->hasFile('avatar')) {
-                $avatarPath = $request->file('avatar')->store('users', 'public');
-            }
-
-            $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'team_id' => $team->id,
-                'avatar' => $avatarPath
-            ]);
-
-            $token = $user->createToken('auth_token')->plainTextToken;
-
-            return [
-                'user' => $user,
-                'token' => $token
-            ];
-        });
+        $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
+            'status' => 'success',
+            'message' => 'you are regestred, go login',
             'user' => $user,
             'token' => $token
         ]);
