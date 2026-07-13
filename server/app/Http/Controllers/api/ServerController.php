@@ -48,6 +48,7 @@ class ServerController extends Controller
 
         return response()->json([
             'status' => 'success',
+            'message' => 'new server created',
             'server' => $server
         ], 201);
 
@@ -70,6 +71,7 @@ class ServerController extends Controller
 
         return response()->json([
             'status' => 'success',
+            'message' => 'server updated',
             'server' => $server
         ]);
     }
