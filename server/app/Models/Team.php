@@ -12,7 +12,7 @@ class Team extends Model
 {
     protected $fillable = ['name', 'invite_code'];
 
-    public function users(): HasMany
+    public function members(): HasMany
     {
         return $this->hasMany(User::class);
     }

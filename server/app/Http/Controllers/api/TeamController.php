@@ -42,13 +42,55 @@ class TeamController extends Controller
         //
     }
 
-    public function leave()
+    public function leave(Request $request)
     {
-        //
+        $user = $request->user();
+        $team = $user->team;
+
+        if (!$team) {
+            return response()->json([
+                'status' => 'faild',
+                'message' => 'You are not in a team.'
+            ], 422);
+        }
+
+        if ($team->owner_id === $user->id) {
+            return response()->json([
+                'status' => 'faild',
+                'message' => 'As the owner, you cannot leave. You must delete the team or transfer ownership.'
+            ], 422);
+        }
+
+        $user->update([
+            'team_id' => null
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'You have left the team.'
+        ]);
+
     }
 
-    public function deleteTeam()
+    public function deleteTeam(Request $request)
     {
-        //
+        $user = $request->user();
+        $team = $user->team;
+
+        if (!$team || $team->owner_id !== $user->id) {
+            return response()->json([
+                'status' => 'faild',
+                'message' => 'Unauthorized. Only the owner can delete the team.'
+            ], 403);
+        }
+
+        $team->members()->update(['team_id' => null]);
+
+        $team->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Team and all associated data have been deleted.'
+        ]);
     }
 }
