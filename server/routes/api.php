@@ -52,4 +52,5 @@ Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
     Route::post('/team/generate-inv-code', [TeamController::class, 'generateInvCode']);
     Route::post('/team/leave', [TeamController::class, 'leave']);
     Route::delete('/team/delete-team', [TeamController::class, 'deleteTeam']);
+    Route::patch('/team/update/{team}', [TeamController::class, 'update']);
 });

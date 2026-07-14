@@ -63,6 +63,32 @@ class TeamController extends Controller
             'team' => $team
         ], 201);
     }
+    public function update(Request $request, Team $team)
+    {
+        $request->validate([
+            'name' => 'string|required',
+        ]);
+
+        $user = $request->user();
+        if ($user->team_id === null) {
+            return response()->json([
+                'status' => 'faild',
+                'message' => 'Unauthorized. join a team first'
+            ], 403);
+        }
+
+        $this->authorize('update', $team);
+
+        $team->update([
+            'name' => $request->name
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'team info updated successfuly',
+            'team' => $team
+        ]);
+    }
     public function joinByCode(Request $request)
     {
         $user = $request->user();

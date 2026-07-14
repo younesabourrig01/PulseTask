@@ -37,7 +37,7 @@ class TeamPolicy
      */
     public function update(User $user, Team $team): bool
     {
-        return false;
+        return $user->id = $team->owner_id;
     }
 
     /**
