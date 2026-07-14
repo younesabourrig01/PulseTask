@@ -5,21 +5,22 @@ namespace App\Http\Controllers\api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Team;
-use App\Models\User;
+use Illuminate\Support\Str;
+use Carbon\Carbon;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+
 
 class TeamController extends Controller
 {
-    public function teamInfo(Team $team)
+    use AuthorizesRequests;
+
+    public function teamInfo(Request $request, Team $team)
     {
-        $data = [
-            '$members' => $team->members,
-            '$name ' => $team->name,
-            '$owner' => User::where('id', $team->owner_id)->first(),
-        ];
+        $this->authorize('view', $team);
 
         return response()->json([
             'status' => 'success',
-            'data' => $data
+            'data' => $team
         ]);
     }
     public function create(Request $request)
@@ -51,13 +52,68 @@ class TeamController extends Controller
             'team' => $team
         ], 201);
     }
-    public function invite()
+    public function joinByCode(Request $request)
     {
-        //
-    }
-    public function generateInvCode(Team $team)
-    {
+        $user = $request->user();
+        $request->validate([
+            'invite_code' => 'required|max:6'
+        ]);
 
+        if ($user->team_id !== null) {
+            return response()->json([
+                'status' => 'faild',
+                'message' => 'You are already a member of a team.'
+            ], 422);
+        }
+
+        $team = Team::where('invite_code', $request->invite_code)
+            ->where('invite_code_expires_at', '>', Carbon::now())
+            ->first();
+
+        if (!$team) {
+            return response()->json([
+                'status' => 'faild',
+                'message' => 'Invalid or expired invitation code.'
+            ], 422);
+        }
+
+        $user->update([
+            'team_id' => $team->id,
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Successfully joined the team: ' . $team->name,
+            'team' => $team
+        ]);
+
+
+    }
+    public function generateInvCode(Request $request)
+    {
+        $user = $request->user();
+        $team = $request->team;
+
+        if (!$team || $team->owner_id !== $user->id) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Unauthorized. Only team owners can generate invite codes.'
+            ], 403);
+        }
+
+        $inviteCode = 'PT-' . strtoupper(Str::random(6));
+
+        $team->update([
+            'invite_code' => $inviteCode,
+            'invite_code_expires_at' => Carbon::now()->addHours(24)
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Invite code generated successfully!',
+            'invite_code' => $inviteCode,
+            'expires_at' => $team->invite_code_expires_at->toIso8601String(),
+        ]);
     }
     public function leave(Request $request)
     {
