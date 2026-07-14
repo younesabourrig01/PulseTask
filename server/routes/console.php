@@ -10,3 +10,6 @@ Artisan::command('inspire', function () {
 
 //run the command every minute
 Schedule::command('pulse:check-servers')->everyMinute();
+
+//clear db for models ho sepport Prunable
+Schedule::command('model:prune')->daily();

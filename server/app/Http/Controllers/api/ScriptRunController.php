@@ -37,7 +37,6 @@ class ScriptRunController extends Controller
             'run_id' => $run->id
         ]);
     }
-
     public function triggerFromCli(Request $request)
     {
         $request->validate([
@@ -68,7 +67,6 @@ class ScriptRunController extends Controller
             'run_id' => $run->id
         ]);
     }
-
     public function getStatusFromCli(ScriptRun $scriptRun)
     {
         $this->authorize('view', $scriptRun);
