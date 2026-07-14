@@ -14,13 +14,24 @@ class TeamController extends Controller
 {
     use AuthorizesRequests;
 
-    public function teamInfo(Request $request, Team $team)
+    public function teamInfo(Request $request)
     {
+        $user = $request->user();
+        $team = $user->team;
+
+        if (!$team) {
+            return response()->json([
+                'status' => 'faild',
+                'message' => $user->name . ' does not belong to any team yet.'
+            ]);
+        }
+
         $this->authorize('view', $team);
 
         return response()->json([
             'status' => 'success',
-            'data' => $team
+            'has_team' => true,
+            'data' => $team->load('members')
         ]);
     }
     public function create(Request $request)
@@ -144,7 +155,6 @@ class TeamController extends Controller
         ]);
 
     }
-
     public function deleteTeam(Request $request)
     {
         $user = $request->user();
