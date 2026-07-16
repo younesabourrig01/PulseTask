@@ -8,6 +8,7 @@ use App\Models\Team;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use App\Services\DiscordAlertService;
 
 
 class TeamController extends Controller
@@ -121,6 +122,13 @@ class TeamController extends Controller
             'team_id' => $team->id,
         ]);
 
+        DiscordAlertService::send(
+            $team,
+            "✨New Member is here!",
+            "Say welcome to **{$user->name}**",
+            "info"
+        );
+
         return response()->json([
             'status' => 'success',
             'message' => 'Successfully joined the team: ' . $team->name,
@@ -177,6 +185,13 @@ class TeamController extends Controller
         $user->update([
             'team_id' => null
         ]);
+
+        DiscordAlertService::send(
+            $team,
+            "😢 Member left the team!",
+            "Say good bay to **{$user->name}**, we wish to you all the best.",
+            "info"
+        );
 
         return response()->json([
             'status' => 'success',
