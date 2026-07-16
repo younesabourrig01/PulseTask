@@ -68,7 +68,6 @@ class CheckServerUptime implements ShouldQueue
             $this->uptimeCheck->server->update(['status' => 'offline']);
 
             event(new ServerStatusUpdated($this->uptimeCheck->server));
-
         }
     }
 }
