@@ -10,7 +10,7 @@ use App\Models\Script;
 
 class Team extends Model
 {
-    protected $fillable = ['name', 'invite_code'];
+    protected $fillable = ['name', 'invite_code', 'discord_webhook_url', 'owner_id', 'invite_code', 'invite_code_expires_at'];
 
     public function members(): HasMany
     {

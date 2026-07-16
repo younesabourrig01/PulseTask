@@ -38,7 +38,8 @@ class TeamController extends Controller
     {
         $user = $request->user();
         $request->validate([
-            'name' => 'string|required|max:255'
+            'name' => 'string|required|max:255',
+            'discord_webhook_url' => 'string'
         ]);
 
         if ($user->team_id !== null) {
@@ -67,6 +68,7 @@ class TeamController extends Controller
     {
         $request->validate([
             'name' => 'string|required',
+            'discord_webhook_url' => 'string'
         ]);
 
         $user = $request->user();
@@ -80,7 +82,8 @@ class TeamController extends Controller
         $this->authorize('update', $team);
 
         $team->update([
-            'name' => $request->name
+            'name' => $request->name,
+            'discord_webhook_url' => $request->discord_webhook_url
         ]);
 
         return response()->json([
