@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->string("name");
             $table->string('invite_code')->nullable()->unique();
             $table->integer('owner_id');
+            $table->string('discord_webhook_url')->nullable();
             $table->timestamp('invite_code_expires_at')->nullable();
             $table->timestamps();
         });
