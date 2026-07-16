@@ -7,6 +7,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use phpseclib3\Crypt\PublicKeyLoader;
 use phpseclib3\Net\SSH2;
+use App\Services\DiscordAlertService;
+
 
 class ExecuteServerScript implements ShouldQueue
 {
@@ -55,11 +57,25 @@ class ExecuteServerScript implements ShouldQueue
                     'status' => 'success',
                     'output' => $outPut
                 ]);
+
+                DiscordAlertService::send(
+                    $run->server->team,
+                    "✅ Script Executed Successfully",
+                    "The script **{$run->script->title}** was executed by **{$run->user->name}** on server **{$run->server->name}**.",
+                    "success"
+                );
             } else {
                 $run->update([
                     'status' => 'failed',
                     'output' => $outPut ?: 'Script exited with status code: {$exitStatus}'
                 ]);
+
+                DiscordAlertService::send(
+                    $run->server->team,
+                    "🚨 Script Executed with errors",
+                    "The script **{$run->script->title}** was executed by **{$run->user->name}** on server **{$run->server->name}**.",
+                    "danger"
+                );
             }
 
         } catch (\Exception $e) {
@@ -67,6 +83,13 @@ class ExecuteServerScript implements ShouldQueue
                 'status' => 'failed',
                 'error_output' => 'Engine Error: ' . $e->getMessage(),
             ]);
+
+            DiscordAlertService::send(
+                $run->server->team,
+                "🚨 Script dosn't Executed",
+                "The script **{$run->script->title}** by **{$run->user->name}** on server **{$run->server->name}** faced an engine Error : **{$e->getMessage()}**.",
+                "danger"
+            );
         }
     }
 }

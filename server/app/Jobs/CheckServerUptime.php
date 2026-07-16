@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Http;
 // use Illuminate\Support\LogManager;
+use App\Services\DiscordAlertService;
 
 class CheckServerUptime implements ShouldQueue
 {
@@ -68,6 +69,13 @@ class CheckServerUptime implements ShouldQueue
             $this->uptimeCheck->server->update(['status' => 'offline']);
 
             event(new ServerStatusUpdated($this->uptimeCheck->server));
+
+            DiscordAlertService::send(
+                $this->uptimeCheck->server->team,
+                "🚨 Server is DOWN!",
+                "The server **{$this->uptimeCheck->server->name}** ({$this->uptimeCheck->server->ip_address}) is not responding to pings.",
+                "danger"
+            );
         }
     }
 }
