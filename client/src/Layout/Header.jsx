@@ -1,5 +1,15 @@
 import React from "react";
+import { BookOpen, Newspaper } from "lucide-react";
+import { FaGithub } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import Icon from "../assets/pulsetask-icon.svg";
+
+const navLinks = [
+  { label: "Documentation", href: "#", icon: BookOpen },
+  { label: "Open Source", href: "#", icon: FaGithub },
+  { label: "Blog", href: "#", icon: Newspaper },
+];
+
 export const Header = () => {
   return (
     <nav className="w-full bg-[#0b0e14] px-6 py-4 flex items-center justify-between">
@@ -11,95 +21,34 @@ export const Header = () => {
         </span>
       </div>
       {/* Center nav links */}
-      <div className="hidden md:flex items-center gap-8">
-        <a
-          href="#"
-          className="flex items-center gap-1 text-gray-300 hover:text-white text-sm font-medium"
-        >
-          Platform
-          <svg
-            className="w-3 h-3"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
-        </a>
-        <a
-          href="#"
-          className="text-gray-300 hover:text-white text-sm font-medium"
-        >
-          Documentation
-        </a>
-        <a
-          href="#"
-          className="text-gray-300 hover:text-white text-sm font-medium"
-        >
-          Pricing
-        </a>
-        <a
-          href="#"
-          className="flex items-center gap-1 text-gray-300 hover:text-white text-sm font-medium"
-        >
-          Community
-          <svg
-            className="w-3 h-3"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
-        </a>
-        <a
-          href="#"
-          className="flex items-center gap-1 text-gray-300 hover:text-white text-sm font-medium"
-        >
-          Company
-          <svg
-            className="w-3 h-3"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
-        </a>
-        <a
-          href="#"
-          className="text-gray-300 hover:text-white text-sm font-medium"
-        >
-          Enterprise
-        </a>
-      </div>
+      <ul className="hidden md:flex items-center gap-8">
+        {navLinks.map(({ label, href, icon: LinkIcon }) => (
+          <li key={label}>
+            <a
+              href={href}
+              className="flex items-center gap-2 text-gray-300 hover:text-white text-sm font-medium transition-colors"
+            >
+              <LinkIcon className="w-4 h-4" aria-hidden="true" />
+              <span>{label}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
 
       {/* Right side auth */}
       <div className="flex items-center gap-6">
-        <a
-          href="#"
+        <Link
+          to={"/signin"}
           className="text-gray-300 hover:text-white text-sm font-medium"
         >
           Sign in
-        </a>
-        <button className="bg-[#5b5bf5] hover:bg-[#4a4af0] text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors">
+        </Link>
+        <Link
+          to={"/signup"}
+          className="bg-[#5b5bf5] hover:bg-[#4a4af0] text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
+        >
           Sign up
-        </button>
+        </Link>
       </div>
     </nav>
   );
