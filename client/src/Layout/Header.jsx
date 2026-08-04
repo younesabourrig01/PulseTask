@@ -1,12 +1,13 @@
 import React from "react";
-import { BookOpen, Newspaper } from "lucide-react";
+import { BookOpen, Layers3, Newspaper } from "lucide-react";
 import { FaGithub } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import Icon from "../assets/pulsetask-icon.svg";
 
 const navLinks = [
+  { label: "Platform", to: "/", icon: Layers3 },
   { label: "Documentation", href: "#", icon: BookOpen },
-  { label: "Open Source", href: "#", icon: FaGithub },
+  { label: "Open Source", to: "/open-source", icon: FaGithub },
   { label: "Blog", href: "#", icon: Newspaper },
 ];
 
@@ -22,15 +23,25 @@ export const Header = () => {
       </div>
       {/* Center nav links */}
       <ul className="hidden md:flex items-center gap-8">
-        {navLinks.map(({ label, href, icon: LinkIcon }) => (
+        {navLinks.map(({ label, href, to, icon: LinkIcon }) => (
           <li key={label}>
-            <a
-              href={href}
-              className="flex items-center gap-2 text-gray-300 hover:text-white text-sm font-medium transition-colors"
-            >
-              <LinkIcon className="w-4 h-4" aria-hidden="true" />
-              <span>{label}</span>
-            </a>
+            {to ? (
+              <Link
+                to={to}
+                className="flex items-center gap-2 text-gray-300 hover:text-white text-sm font-medium transition-colors"
+              >
+                <LinkIcon className="w-4 h-4" aria-hidden="true" />
+                <span>{label}</span>
+              </Link>
+            ) : (
+              <a
+                href={href}
+                className="flex items-center gap-2 text-gray-300 hover:text-white text-sm font-medium transition-colors"
+              >
+                <LinkIcon className="w-4 h-4" aria-hidden="true" />
+                <span>{label}</span>
+              </a>
+            )}
           </li>
         ))}
       </ul>
