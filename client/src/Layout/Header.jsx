@@ -12,7 +12,7 @@ const navLinks = [
 
 export const Header = () => {
   return (
-    <nav className="w-full bg-[#0b0e14] px-6 py-4 flex items-center justify-between">
+    <nav className="fixed left-0 top-0 z-50 flex w-full items-center justify-between bg-[#0b0e14] px-6 py-4">
       {/* Logo */}
       <div className="flex items-center gap-2">
         <img className="w-6 h-6" viewBox="0 0 24 24" src={Icon}></img>
