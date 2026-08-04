@@ -1,5 +1,6 @@
 import { Header } from "./Layout/Header";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
+import { SignIn } from "./Pages/Auth/SignIn";
 import { SignUp } from "./Pages/Auth/SignUp";
 
 function App() {
@@ -7,6 +8,7 @@ function App() {
     <>
       <Header />
       <Routes>
+        <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
       </Routes>
     </>
