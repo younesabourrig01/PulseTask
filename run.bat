@@ -2,9 +2,9 @@
 echo Starting PluseTask services...
 
 :: client
-:: cd frontend
-:: start cmd /k npm run dev
-:: cd ..
+cd frontend
+start cmd /k npm run dev
+cd ..
 
 :: Backend
 cd server
