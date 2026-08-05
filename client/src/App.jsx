@@ -1,4 +1,5 @@
 import { Header } from "./Layout/Header";
+import { Footer } from "./Layout/Footer";
 import { Routes, Route } from "react-router-dom";
 import { SignIn } from "./Pages/Auth/SignIn";
 import { SignUp } from "./Pages/Auth/SignUp";
@@ -16,6 +17,7 @@ function App() {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
       </Routes>
+      <Footer />
     </>
   );
 }
