@@ -12,7 +12,7 @@ export const SignUp = () => {
     name: "",
     email: "",
     password: "",
-    confirm_password: "",
+    password_confirmation: "",
     avatar: null,
   });
 
@@ -61,7 +61,28 @@ export const SignUp = () => {
   };
 
   const handleSubmit = async (e) => {
-    //
+    e.preventDefault();
+
+    const dataToSend = new FormData();
+
+    Object.keys(formData).forEach((key) => {
+      if (formData[key] !== null) {
+        dataToSend.append(key, formData[key]);
+      }
+    });
+
+    try {
+      const response = await register(dataToSend).unwrap();
+      dispatch(
+        setCredentials({
+          user: response.user,
+          accessToken: response.token,
+        }),
+      );
+      navigate("/dashboard");
+    } catch (err) {
+      console.error("failed", err);
+    }
   };
 
   return (
@@ -76,7 +97,7 @@ export const SignUp = () => {
             </p>
           </div>
 
-          <form className="space-y-3">
+          <form className="space-y-3" onSubmit={handleSubmit}>
             <div>
               <label
                 htmlFor="name"
@@ -92,6 +113,8 @@ export const SignUp = () => {
                 maxLength={255}
                 autoComplete="name"
                 placeholder="Your name"
+                value={formData.name}
+                onChange={handleChange}
                 className="w-full rounded-lg border border-white/10 bg-[#0b0e14] px-4 py-2.5 text-sm text-white outline-none transition placeholder:text-gray-500 focus:border-[#5b5bf5] focus:ring-2 focus:ring-[#5b5bf5]/30"
               />
             </div>
@@ -111,6 +134,8 @@ export const SignUp = () => {
                 maxLength={255}
                 autoComplete="email"
                 placeholder="you@example.com"
+                value={formData.email}
+                onChange={handleChange}
                 className="w-full rounded-lg border border-white/10 bg-[#0b0e14] px-4 py-2.5 text-sm text-white outline-none transition placeholder:text-gray-500 focus:border-[#5b5bf5] focus:ring-2 focus:ring-[#5b5bf5]/30"
               />
             </div>
@@ -130,6 +155,8 @@ export const SignUp = () => {
                 minLength={8}
                 autoComplete="new-password"
                 placeholder="Minimum 8 characters"
+                value={formData.password}
+                onChange={handleChange}
                 className="w-full rounded-lg border border-white/10 bg-[#0b0e14] px-4 py-2.5 text-sm text-white outline-none transition placeholder:text-gray-500 focus:border-[#5b5bf5] focus:ring-2 focus:ring-[#5b5bf5]/30"
               />
             </div>
@@ -149,6 +176,8 @@ export const SignUp = () => {
                 minLength={8}
                 autoComplete="new-password"
                 placeholder="Confirm your password"
+                value={formData.password_confirmation}
+                onChange={handleChange}
                 className="w-full rounded-lg border border-white/10 bg-[#0b0e14] px-4 py-2.5 text-sm text-white outline-none transition placeholder:text-gray-500 focus:border-[#5b5bf5] focus:ring-2 focus:ring-[#5b5bf5]/30"
               />
             </div>
@@ -165,6 +194,7 @@ export const SignUp = () => {
                 name="avatar"
                 type="file"
                 accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+                onChange={handleChange}
                 className="w-full cursor-pointer rounded-lg border border-dashed border-white/15 bg-[#0b0e14] px-4 py-2 text-sm text-gray-300 outline-none transition file:mr-4 file:rounded-md file:border-0 file:bg-[#5b5bf5] file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-white hover:border-white/30 focus:border-[#5b5bf5] focus:ring-2 focus:ring-[#5b5bf5]/30"
               />
               <p className="mt-1 text-xs text-gray-500">
@@ -174,10 +204,18 @@ export const SignUp = () => {
 
             <button
               type="submit"
-              className="w-full rounded-lg bg-[#5b5bf5] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#4a4af0] focus:outline-none focus:ring-2 focus:ring-[#5b5bf5] focus:ring-offset-2 focus:ring-offset-[#111827]"
+              disabled={isLoading}
+              className="w-full rounded-lg bg-[#5b5bf5] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#4a4af0] focus:outline-none focus:ring-2 focus:ring-[#5b5bf5] focus:ring-offset-2 focus:ring-offset-[#111827] disabled:cursor-not-allowed disabled:opacity-70"
             >
-              Sign up
+              {isLoading ? "Signing up..." : "Sign up"}
             </button>
+
+            {error && (
+              <p className="text-sm text-red-400">
+                Registration failed. Please check your information and try
+                again.
+              </p>
+            )}
           </form>
         </section>
       </div>
