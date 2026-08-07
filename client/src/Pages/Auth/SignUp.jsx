@@ -1,7 +1,69 @@
 import React from "react";
 import Logo from "../../assets/pulsetask-logo.svg";
+import imageCompression from "browser-image-compression";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useRegisterMutation } from "../../features/auth/authApiSlice";
+import { setCredentials } from "../../features/auth/authSlice";
 
 export const SignUp = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirm_password: "",
+    avatar: null,
+  });
+
+  const [register, { isLoading, error }] = useRegisterMutation();
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleChange = async (e) => {
+    const { name, type, value, files } = e.target;
+
+    if (type === "file") {
+      const file = files?.[0];
+      if (!file) return;
+
+      const maxSize = 2 * 1024 * 1024;
+
+      if (file.size > maxSize) {
+        //i'll add hotetoast next
+        alert("Avatar must be under 2 MB");
+        return;
+      }
+
+      try {
+        const compressedFile = await imageCompression(file, {
+          maxSizeMB: 0.5,
+          maxWidthOrHeight: 500,
+          useWebWorker: true,
+        });
+
+        setFormData((prev) => ({
+          ...prev,
+          [name]: compressedFile,
+        }));
+      } catch (error) {
+        console.error("Image compression failed:", error);
+      }
+
+      return;
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    //
+  };
+
   return (
     <main className="min-h-screen bg-[#0b0e14] px-4 pb-6 pt-20 text-white">
       <div className="mx-auto flex min-h-[calc(100vh-104px)] w-full max-w-md items-center justify-center">
