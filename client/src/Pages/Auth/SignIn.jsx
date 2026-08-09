@@ -1,7 +1,35 @@
 import React from "react";
 import Logo from "../../assets/pulsetask-logo.svg";
+import { useState } from "react";
+import { useLoginMutation } from "../../features/auth/authApiSlice";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { setCredentials } from "../../features/auth/authSlice";
 
 export const SignIn = () => {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [login, { isLoading, error }] = useLoginMutation();
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    //
+  };
+
   return (
     <main className="min-h-screen bg-[#0b0e14] px-4 pb-6 pt-20 text-white">
       <div className="mx-auto flex min-h-[calc(100vh-104px)] w-full max-w-md items-center justify-center">
