@@ -70,7 +70,7 @@ export const Footer = () => {
       </div>
 
       <div className="mx-auto mt-10 flex w-full max-w-7xl flex-col gap-3 border-t border-white/10 pt-6 text-xs text-gray-500 sm:flex-row sm:items-center sm:justify-between">
-        <p>© 2026 PluseTask. All rights reserved.</p>
+        <p>© 2026 PulseTask. All rights reserved.</p>
         <p>Built for freelancers, small teams, and server operators.</p>
       </div>
     </footer>

@@ -1,5 +1,5 @@
 @echo off
-echo Starting PluseTask services...
+echo Starting PulseTask services...
 
 :: client
 cd frontend

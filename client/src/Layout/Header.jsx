@@ -36,7 +36,7 @@ export const Header = () => {
         <div className="flex items-center gap-2">
           <img className="w-6 h-6" viewBox="0 0 24 24" src={Icon}></img>
           <span className="text-white font-semibold text-lg">
-            Pluse<span className="text-blue-400">Task</span>
+            Pulse<span className="text-blue-400">Task</span>
           </span>
         </div>
         {/* Center nav links */}
