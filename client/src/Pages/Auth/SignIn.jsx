@@ -27,7 +27,28 @@ export const SignIn = () => {
   };
 
   const handleSubmit = async (e) => {
-    //
+    e.preventDefault();
+
+    const dataTosend = new FormData();
+
+    Object.keys(formData).forEach((key) => {
+      if (formData[key] !== null) {
+        dataTosend.append(key, formData[key]);
+      }
+    });
+
+    try {
+      const response = await login(dataTosend).unwrap();
+      dispatch(
+        setCredentials({
+          user: response.user,
+          accessToken: response.token,
+        }),
+      );
+      navigate("/dashboard");
+    } catch (err) {
+      console.error("failed", err);
+    }
   };
 
   return (
@@ -42,7 +63,7 @@ export const SignIn = () => {
             </p>
           </div>
 
-          <form className="space-y-3">
+          <form className="space-y-3" onSubmit={handleSubmit}>
             <div>
               <label
                 htmlFor="email"
@@ -58,6 +79,8 @@ export const SignIn = () => {
                 autoComplete="email"
                 placeholder="you@example.com"
                 className="w-full rounded-lg border border-white/10 bg-[#0b0e14] px-4 py-2.5 text-sm text-white outline-none transition placeholder:text-gray-500 focus:border-[#5b5bf5] focus:ring-2 focus:ring-[#5b5bf5]/30"
+                onChange={handleChange}
+                value={formData.email}
               />
             </div>
 
@@ -76,15 +99,25 @@ export const SignIn = () => {
                 autoComplete="current-password"
                 placeholder="Your password"
                 className="w-full rounded-lg border border-white/10 bg-[#0b0e14] px-4 py-2.5 text-sm text-white outline-none transition placeholder:text-gray-500 focus:border-[#5b5bf5] focus:ring-2 focus:ring-[#5b5bf5]/30"
+                onChange={handleChange}
+                value={formData.password}
               />
             </div>
 
             <button
               type="submit"
               className="w-full rounded-lg bg-[#5b5bf5] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#4a4af0] focus:outline-none focus:ring-2 focus:ring-[#5b5bf5] focus:ring-offset-2 focus:ring-offset-[#111827]"
+              disabled={isLoading}
             >
-              Sign in
+              {isLoading ? "Signing in..." : "SignIn"}
             </button>
+
+            {error && (
+              <p className="text-sm text-red-400">
+                Signin in failed. Please check your information and try
+                again.
+              </p>
+            )}
           </form>
         </section>
       </div>
