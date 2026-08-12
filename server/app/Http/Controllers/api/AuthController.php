@@ -5,8 +5,6 @@ namespace App\Http\Controllers\api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Team;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -119,7 +117,7 @@ class AuthController extends Controller
         ]);
     }
     //delete account
-    public function delete(Request $request)
+    public function deleteAccount(Request $request)
     {
         $user = $request->user();
         $request->validate([

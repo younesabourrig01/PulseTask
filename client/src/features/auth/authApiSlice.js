@@ -33,6 +33,27 @@ export const authApiSlice = apiSlice.injectEndpoints({
         }
       },
     }),
+    updatePassword: builder.mutation({
+      query: (credentials) => ({
+        url: "/updatePassword",
+        method: "PATCH",
+        body: credentials,
+      }),
+    }),
+    deleteAccount: builder.mutation({
+      query: (credentials) => ({
+        url: "/delete_account",
+        method: "DELETE",
+        body: credentials,
+      }),
+    }),
+    update: builder.mutation({
+      query: (credentials) => ({
+        url: "/update_profile_info",
+        method: "PATCH",
+        body: credentials,
+      }),
+    }),
   }),
 });
 

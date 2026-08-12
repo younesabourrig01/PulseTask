@@ -18,7 +18,7 @@ Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
     #--user regulare endpoints-----------------------------------------------------------------#
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::patch('/updatePassword', [AuthController::class, 'updatePassword']);
-    Route::delete('/delete_account', [AuthController::class, 'delete']);
+    Route::delete('/delete_account', [AuthController::class, 'deleteAccount']);
     Route::patch('/update_profile_info', [AuthController::class, 'update']);
 
     #--Server endpoints:----------------------------------------------------------------------#
