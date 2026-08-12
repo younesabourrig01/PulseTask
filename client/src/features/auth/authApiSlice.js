@@ -46,6 +46,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
         method: "DELETE",
         body: credentials,
       }),
+      invalidatesTags: ["User"],
     }),
     update: builder.mutation({
       query: (credentials) => ({
@@ -53,6 +54,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
         method: "PATCH",
         body: credentials,
       }),
+      invalidatesTags: ["User"],
     }),
   }),
 });
