@@ -17,8 +17,8 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max|255',
-            'email' => 'required|string|email|max|255|unique:users',
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
         ]);
@@ -73,7 +73,7 @@ class AuthController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
         return response()->json([
-            ['message' => 'Logged out']
+            'message' => 'Logged out'
         ]);
     }
     //update password

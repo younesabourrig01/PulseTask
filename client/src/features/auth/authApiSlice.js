@@ -18,17 +18,18 @@ export const authApiSlice = apiSlice.injectEndpoints({
       }),
     }),
     logout: builder.mutation({
-      query: (credentials) => ({
-        url: "/auth/logout",
+      query: () => ({
+        url: "/logout",
         method: "POST",
       }),
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           await queryFulfilled;
-          dispatch(logout());
-          dispatch(apiSlice.util.resetApiState());
         } catch (err) {
           console.error("Logout failed", err);
+        } finally {
+          dispatch(logout());
+          dispatch(apiSlice.util.resetApiState());
         }
       },
     }),
