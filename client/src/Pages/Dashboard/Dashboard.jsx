@@ -12,6 +12,8 @@ import {
   TerminalSquare,
   UsersRound,
 } from "lucide-react";
+import { useLogoutMutation } from "../../features/auth/authApiSlice";
+import { useNavigate } from "react-router-dom";
 
 const stats = [
   {
@@ -111,6 +113,19 @@ const StatusBadge = ({ status }) => (
 );
 
 export const Dashboard = () => {
+  const navigate = useNavigate();
+  const [logout] = useLogoutMutation();
+
+  const handleClick = async () => {
+    try {
+      await logout().unwrap();
+    } catch (err) {
+      console.error("failed", err);
+    } finally {
+      navigate("/");
+    }
+  };
+
   return (
     <main className="min-h-screen bg-[#0b0e14] px-4 pb-12 pt-24 text-white sm:px-6 lg:px-8">
       <section className="mx-auto w-full max-w-7xl">
@@ -130,6 +145,14 @@ export const Dashboard = () => {
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row">
+            <button
+              type="button"
+              onClick={handleClick}
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/10 bg-[#111827] px-4 py-2.5 text-sm font-semibold text-gray-200 transition hover:border-white/20 hover:text-white"
+            >
+              <Copy className="h-4 w-4" aria-hidden="true" />
+              Logout
+            </button>
             <button
               type="button"
               className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/10 bg-[#111827] px-4 py-2.5 text-sm font-semibold text-gray-200 transition hover:border-white/20 hover:text-white"
