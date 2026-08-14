@@ -17,7 +17,7 @@ export const serversApiSlice = apiSlice.injectEndpoints({
     }),
     destroyServer: builder.mutation({
       query: (serverId) => ({
-        url: `/server/${serverId}`,
+        url: `/servers/${serverId}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Server"],
