@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useLogoutMutation } from "../../features/auth/authApiSlice";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const stats = [
   {
@@ -114,13 +115,20 @@ const StatusBadge = ({ status }) => (
 
 export const Dashboard = () => {
   const navigate = useNavigate();
-  const [logout] = useLogoutMutation();
+  const [logout, { isLoading: isLoggingOut }] = useLogoutMutation();
 
   const handleClick = async () => {
     try {
-      await logout().unwrap();
+      const response = await logout().unwrap();
+      toast.success(response?.message || "Logged out successfully!");
     } catch (err) {
       console.error("failed", err);
+      toast.error(
+        err?.data?.message ||
+          err?.error ||
+          err?.message ||
+          "Logout failed. You have been signed out locally.",
+      );
     } finally {
       navigate("/");
     }
@@ -148,10 +156,11 @@ export const Dashboard = () => {
             <button
               type="button"
               onClick={handleClick}
-              className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/10 bg-[#111827] px-4 py-2.5 text-sm font-semibold text-gray-200 transition hover:border-white/20 hover:text-white"
+              disabled={isLoggingOut}
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/10 bg-[#111827] px-4 py-2.5 text-sm font-semibold text-gray-200 transition hover:border-white/20 hover:text-white disabled:cursor-not-allowed disabled:opacity-70"
             >
               <Copy className="h-4 w-4" aria-hidden="true" />
-              Logout
+              {isLoggingOut ? "Logging out..." : "Logout"}
             </button>
             <button
               type="button"

@@ -5,6 +5,7 @@ import { useLoginMutation } from "../../features/auth/authApiSlice";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setCredentials } from "../../features/auth/authSlice";
+import { toast } from "sonner";
 
 export const SignIn = () => {
   const [formData, setFormData] = useState({
@@ -12,7 +13,7 @@ export const SignIn = () => {
     password: "",
   });
 
-  const [login, { isLoading, error }] = useLoginMutation();
+  const [login, { isLoading }] = useLoginMutation();
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -45,9 +46,18 @@ export const SignIn = () => {
           accessToken: response.token,
         }),
       );
+
+      toast.success(response.message || "Signed in successfully!");
+
       navigate("/dashboard");
     } catch (err) {
-      console.error("failed", err);
+      console.error(err);
+      toast.error(
+        err?.data?.message ||
+          err?.error ||
+          err?.message ||
+          "Something went wrong. Please try again.",
+      );
     }
   };
 
@@ -112,12 +122,11 @@ export const SignIn = () => {
               {isLoading ? "Signing in..." : "SignIn"}
             </button>
 
-            {error && (
+            {/* {error && (
               <p className="text-sm text-red-400">
-                Signin in failed. Please check your information and try
-                again.
+                Signin in failed. Please check your information and try again.
               </p>
-            )}
+            )} */}
           </form>
         </section>
       </div>

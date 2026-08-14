@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useRegisterMutation } from "../../features/auth/authApiSlice";
 import { setCredentials } from "../../features/auth/authSlice";
+import { toast } from "sonner";
 
 export const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -31,8 +32,7 @@ export const SignUp = () => {
       const maxSize = 2 * 1024 * 1024;
 
       if (file.size > maxSize) {
-        //i'll add hotetoast next
-        alert("Avatar must be under 2 MB");
+        toast.error("Avatar must be under 2 MB");
         return;
       }
 
@@ -49,6 +49,7 @@ export const SignUp = () => {
         }));
       } catch (error) {
         console.error("Image compression failed:", error);
+        toast.error("Could not prepare that image. Please try another one.");
       }
 
       return;
@@ -79,9 +80,17 @@ export const SignUp = () => {
           accessToken: response.token,
         }),
       );
+
+      toast.success(response.message || "Account created successfully!");
       navigate("/dashboard");
     } catch (err) {
       console.error("failed", err);
+      toast.error(
+        err?.data?.message ||
+          err?.error ||
+          err?.message ||
+          "Registration failed. Please check your information and try again.",
+      );
     }
   };
 
@@ -210,12 +219,12 @@ export const SignUp = () => {
               {isLoading ? "Signing up..." : "Sign up"}
             </button>
 
-            {error && (
+            {/* {error && (
               <p className="text-sm text-red-400">
                 Registration failed. Please check your information and try
                 again.
               </p>
-            )}
+            )} */}
           </form>
         </section>
       </div>
