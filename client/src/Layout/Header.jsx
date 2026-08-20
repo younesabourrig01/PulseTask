@@ -19,57 +19,59 @@ export const Header = () => {
   const renderNavLink = ({ label, href, to, icon: LinkIcon }, className) =>
     to ? (
       <Link to={to} onClick={closeMenu} className={className}>
-        <LinkIcon className="w-4 h-4" aria-hidden="true" />
+        <LinkIcon className="w-3.5 h-3.5" aria-hidden="true" />
         <span>{label}</span>
       </Link>
     ) : (
       <a href={href} onClick={closeMenu} className={className}>
-        <LinkIcon className="w-4 h-4" aria-hidden="true" />
+        <LinkIcon className="w-3.5 h-3.5" aria-hidden="true" />
         <span>{label}</span>
       </a>
     );
 
   return (
-    <nav className="fixed left-0 top-0 z-50 w-full bg-[#0b0e14] px-6 py-4">
-      <div className="flex items-center justify-between">
+    <header className="fixed left-0 top-0 z-50 w-full border-b border-white/10 bg-[#07090e]/85 backdrop-blur-md">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3.5 sm:px-6 lg:px-8">
         {/* Logo */}
-        <div className="flex items-center gap-2">
-          <img className="w-6 h-6" viewBox="0 0 24 24" src={Icon}></img>
-          <span className="text-white font-semibold text-lg">
-            Pulse<span className="text-blue-400">Task</span>
+        <Link to="/" className="flex items-center gap-2.5">
+          <img className="w-6 h-6" src={Icon} alt="PulseTask Logo" />
+          <span className="text-white font-extrabold tracking-wider text-base uppercase">
+            Pulse<span className="text-blue-500">Task</span>
           </span>
-        </div>
+        </Link>
+
         {/* Center nav links */}
-        <ul className="hidden md:flex items-center gap-8">
+        <nav className="hidden md:flex items-center gap-7">
           {navLinks.map((navLink) => (
-            <li key={navLink.label}>
+            <React.Fragment key={navLink.label}>
               {renderNavLink(
                 navLink,
-                "flex items-center gap-2 text-gray-300 hover:text-white text-sm font-medium transition-colors",
+                "flex items-center gap-2 text-xs uppercase tracking-wider font-medium text-gray-300 hover:text-white transition-colors"
               )}
-            </li>
+            </React.Fragment>
           ))}
-        </ul>
+        </nav>
 
         {/* Right side auth */}
-        <div className="hidden md:flex items-center gap-6">
+        <div className="hidden md:flex items-center gap-4">
           <Link
             to={"/signin"}
-            className="text-gray-300 hover:text-white text-sm font-medium"
+            className="text-xs uppercase tracking-wider font-semibold text-gray-300 hover:text-white transition-colors px-2 py-1"
           >
             Sign in
           </Link>
           <Link
             to={"/signup"}
-            className="bg-[#5b5bf5] hover:bg-[#4a4af0] text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
+            className="bg-white hover:bg-gray-200 text-black text-xs uppercase tracking-wider font-bold px-4 py-2 rounded-full transition-all duration-200 shadow-sm"
           >
-            Sign up
+            Get Started
           </Link>
         </div>
 
+        {/* Mobile menu button */}
         <button
           type="button"
-          className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 text-gray-200 transition-colors hover:bg-white/10 hover:text-white md:hidden"
+          className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 text-gray-200 transition-colors hover:bg-white/10 hover:text-white md:hidden"
           aria-label={
             isMenuOpen ? "Close navigation menu" : "Open navigation menu"
           }
@@ -84,37 +86,39 @@ export const Header = () => {
         </button>
       </div>
 
+      {/* Mobile menu dropdown */}
       {isMenuOpen && (
-        <div className="mt-4 rounded-lg border border-white/10 bg-[#111622] p-3 shadow-2xl md:hidden">
-          <ul className="flex flex-col gap-1">
+        <div className="border-t border-white/10 bg-[#07090e] px-4 py-4 md:hidden">
+          <ul className="flex flex-col gap-2">
             {navLinks.map((navLink) => (
               <li key={navLink.label}>
                 {renderNavLink(
                   navLink,
-                  "flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-gray-200 transition-colors hover:bg-white/10 hover:text-white",
+                  "flex items-center gap-3 rounded-md px-3 py-2.5 text-xs uppercase tracking-wider font-semibold text-gray-200 transition-colors hover:bg-white/10 hover:text-white"
                 )}
               </li>
             ))}
           </ul>
 
-          <div className="mt-3 grid gap-2 border-t border-white/10 pt-3">
+          <div className="mt-4 grid gap-2 border-t border-white/10 pt-4">
             <Link
               to={"/signin"}
               onClick={closeMenu}
-              className="rounded-md px-3 py-2.5 text-center text-sm font-medium text-gray-200 transition-colors hover:bg-white/10 hover:text-white"
+              className="rounded-md px-3 py-2 text-center text-xs uppercase tracking-wider font-semibold text-gray-200 transition-colors hover:bg-white/10 hover:text-white"
             >
               Sign in
             </Link>
             <Link
               to={"/signup"}
               onClick={closeMenu}
-              className="rounded-lg bg-[#5b5bf5] px-4 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-[#4a4af0]"
+              className="rounded-full bg-white px-4 py-2.5 text-center text-xs uppercase tracking-wider font-bold text-black transition-colors hover:bg-gray-200"
             >
-              Sign up
+              Get Started
             </Link>
           </div>
         </div>
       )}
-    </nav>
+    </header>
   );
 };
+
