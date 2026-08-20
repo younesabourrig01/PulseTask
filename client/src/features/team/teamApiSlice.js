@@ -1,0 +1,61 @@
+import { apiSlice } from "../../app/api/apiSlice";
+
+export const teamApiSlice = apiSlice.injectEndpoints({
+  endpoints: (builder) => ({
+    teamInfo: builder.query({
+      query: () => `/team/about`,
+    }),
+    createTeam: builder.mutation({
+      query: (credentials) => ({
+        url: "/team/create",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
+    joinTeam: builder.mutation({
+      query: (credentials) => ({
+        url: "/team/join",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
+    generateInvCode: builder.mutation({
+      query: () => ({
+        url: "/team/generate-inv-code",
+        methode: "POST",
+      }),
+    }),
+    leavTeam: builder.mutation({
+      query: () => ({
+        url: "/team/leave",
+        methode: "POST",
+      }),
+      invalidatesTags: ["Team"],
+    }),
+    deleteTeam: builder.mutation({
+      query: () => ({
+        url: "/team/delete-team",
+        methode: "DELETE",
+      }),
+      invalidatesTags: ["Team"],
+    }),
+    updateTeamInfo: builder.mutation({
+      query: ({ teamId, credentials }) => ({
+        url: `/team/update/${teamId}`,
+        methode: "PATCH",
+        body: credentials,
+      }),
+      invalidatesTags: ["Team"],
+    }),
+  }),
+});
+
+export const {
+  useTeamInfoQuery,
+  useCreateTeamMutation,
+  useJoinTeamMutation,
+  useGenerateInvCodeMutation,
+  useLeavTeamMutation,
+  useDeleteTeamMutation,
+  useUpdateTeamInfoMutation,
+} = teamApiSlice;
