@@ -173,8 +173,6 @@ export const SignIn = () => {
               >
                 {isLoading ? "Signing in..." : "Sign in"}
               </button>
-
-              <SocialProviders />
               <p className="text-center text-xs text-gray-500">
                 Need an account?{" "}
                 <Link to="/signup" className="font-semibold text-[#817bff]">
@@ -236,28 +234,4 @@ const VisibilityButton = ({ onClick, label }) => (
   >
     <Eye size={18} />
   </button>
-);
-
-const SocialProviders = () => (
-  <>
-    <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-wider text-gray-600">
-      <span className="h-px flex-1 bg-white/10" />
-      Or continue with
-      <span className="h-px flex-1 bg-white/10" />
-    </div>
-    <div className="grid grid-cols-3 gap-3">
-      {providers.map((provider) => (
-        <button
-          key={provider}
-          type="button"
-          className="flex h-10 items-center justify-center gap-2 rounded-lg border border-white/12 bg-[#0c1118] text-xs font-semibold text-gray-400 transition hover:border-white/25 hover:text-white"
-        >
-          {provider === "Google" && <FaGoogle size={15} />}
-          {provider === "GitHub" && <FaGithub size={16} />}
-          {provider === "Discord" && <FaDiscord size={16} />}
-          <span className="hidden sm:inline">{provider}</span>
-        </button>
-      ))}
-    </div>
-  </>
 );
