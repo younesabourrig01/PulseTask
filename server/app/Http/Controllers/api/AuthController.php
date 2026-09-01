@@ -8,6 +8,9 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Otp;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -170,6 +173,83 @@ class AuthController extends Controller
             'status' => 'success',
             'message' => 'Profile updated successfully',
             'data' => $user
+        ]);
+
+    }
+    //send otp for forgot password
+    public function sendOtp(Request $request)
+    {
+        $validated = $request->validate([
+            'email' => 'required|string|email|max:255',
+        ]);
+
+        $user = User::where('email', $validated['email'])->first();
+
+        if (!$user) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'If this email exists, a verification code has been sent.'
+            ]);
+        }
+
+        $otp = (string) random_int(100000, 999999);
+
+        Otp::updateOrCreate(
+            ['email' => $validated['email']],
+            [
+                'otp' => Hash::make($otp),
+                'expires_at' => now()->addMinutes(10),
+            ]
+        );
+
+        Mail::send('emails.otp', ['otp' => $otp], function ($message) use ($validated) {
+            $message->from(config('mail.from.address'), config('mail.from.name'));
+            $message->to($validated['email']);
+            $message->subject('PulseTask Verification Code');
+        });
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'If this email exists, a verification code has been sent.'
+        ]);
+    }
+    //reset password
+    public function resetPassword(Request $request)
+    {
+        $validated = $request->validate([
+            'email' => 'required|string|email|max:255',
+            'otp' => 'required|string|digits:6',
+            'new_password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = User::where('email', $validated['email'])->first();
+
+        $otpRecord = Otp::where('email', $validated['email'])->first();
+
+        if (
+            !$user ||
+            !$otpRecord ||
+            $otpRecord->expires_at->isPast() ||
+            !Hash::check($validated['otp'], $otpRecord->otp)
+        ) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Invalid or expired verification code.'
+            ], 400);
+        }
+
+        DB::transaction(function () use ($user, $otpRecord, $validated) {
+            $user->update([
+                'password' => Hash::make($validated['new_password'])
+            ]);
+
+            $otpRecord->delete();
+            $user->tokens()->delete();
+        });
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Password changed successfully. Please log in again.'
         ]);
 
     }

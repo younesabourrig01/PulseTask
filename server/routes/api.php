@@ -9,6 +9,8 @@ use App\Http\Controllers\api\TeamController;
 #=========PUBLIC ROUTES==========# 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/forgot-password/send-otp', [AuthController::class, 'sendOtp'])->middleware('throttle:5,1');
+Route::post('/forgot-password/reset', [AuthController::class, 'resetPassword'])->middleware('throttle:5,1');
 #================================#
 
 #====PRIVATE ROUTES==========================================================================================#
