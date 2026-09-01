@@ -56,6 +56,21 @@ export const authApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["User"],
     }),
+    sendOtp: builder.mutation({
+      query: (credentials) => ({
+        url: "/forgot-password/send-otp",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
+    resetPassword: builder.mutation({
+      query: (credentials) => ({
+        url: "/forgot-password/reset",
+        method: "POST",
+        body: credentials,
+      }),
+      invalidatesTags: ["User"],
+    }),
   }),
 });
 
@@ -66,4 +81,6 @@ export const {
   useUpdatePasswordMutation,
   useDeleteAccountMutation,
   useUpdateMutation,
+  useSendOtpMutation,
+  useResetPasswordMutation,
 } = authApiSlice;

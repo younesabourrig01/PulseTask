@@ -18,9 +18,6 @@ import {
   Upload,
   User,
 } from "lucide-react";
-import { FaDiscord, FaGithub, FaGoogle } from "react-icons/fa";
-
-const providers = ["Google", "GitHub", "Discord"];
 
 export const SignUp = () => {
   const [formData, setFormData] = useState({

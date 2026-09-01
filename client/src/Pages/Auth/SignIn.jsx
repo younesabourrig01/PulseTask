@@ -15,9 +15,6 @@ import {
   Server,
   ShieldCheck,
 } from "lucide-react";
-import { FaDiscord, FaGithub, FaGoogle } from "react-icons/fa";
-
-const providers = ["Google", "GitHub", "Discord"];
 
 export const SignIn = () => {
   const [formData, setFormData] = useState({
@@ -161,9 +158,12 @@ export const SignIn = () => {
                   />
                   Remember me
                 </label>
-                <button type="button" className="font-semibold text-[#817bff]">
+                <Link
+                  to="/forgot-password"
+                  className="font-semibold text-[#817bff]"
+                >
                   Forgot password?
-                </button>
+                </Link>
               </div>
 
               <button
