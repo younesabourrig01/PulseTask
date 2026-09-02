@@ -42,8 +42,14 @@ const networkData = [
 ];
 
 const connectionData = [
-  { h: 9200 }, { h: 10500 }, { h: 11200 }, { h: 10800 },
-  { h: 11800 }, { h: 12100 }, { h: 12405 }, { h: 11900 },
+  { h: 9200 },
+  { h: 10500 },
+  { h: 11200 },
+  { h: 10800 },
+  { h: 11800 },
+  { h: 12100 },
+  { h: 12405 },
+  { h: 11900 },
 ];
 
 const statStrip = [
@@ -54,24 +60,49 @@ const statStrip = [
 ];
 
 const servers = [
-  { name: "prod-db-01",     ip: "10.0.1.4",  status: "online",  latency: "18ms" },
-  { name: "prod-api-02",    ip: "10.0.2.11", status: "online",  latency: "22ms" },
-  { name: "staging-web-03", ip: "10.0.3.8",  status: "online",  latency: "31ms" },
-  { name: "cache-redis-04", ip: "10.0.4.22", status: "online",  latency: "12ms" },
-  { name: "worker-q-05",    ip: "10.0.5.7",  status: "offline", latency: "—" },
+  { name: "prod-db-01", ip: "10.0.1.4", status: "online", latency: "18ms" },
+  { name: "prod-api-02", ip: "10.0.2.11", status: "online", latency: "22ms" },
+  { name: "staging-web-03", ip: "10.0.3.8", status: "online", latency: "31ms" },
+  {
+    name: "cache-redis-04",
+    ip: "10.0.4.22",
+    status: "online",
+    latency: "12ms",
+  },
+  { name: "worker-q-05", ip: "10.0.5.7", status: "offline", latency: "—" },
 ];
 
 const resourceDonut = [
   { name: "Disk", value: 82, color: "#3b82f6" },
-  { name: "RAM",  value: 59, color: "#f97316" },
-  { name: "CPU",  value: 42, color: "#eab308" },
+  { name: "RAM", value: 59, color: "#f97316" },
+  { name: "CPU", value: 42, color: "#eab308" },
 ];
 
 const execLog = [
-  { script: "db-backup.sh",      target: "Completed in 4m 12s · 2 min ago",   status: "success", color: "#22c55e" },
-  { script: "cache-flush.sh",    target: "Running on cache-redis-04 · now",    status: "pending", color: "#f97316" },
-  { script: "deploy-worker.sh",  target: "Rolled back · 18 min ago",           status: "success", color: "#22c55e" },
-  { script: "health-check.sh",   target: "Failed on worker-q-05 · 32 min ago", status: "failed",  color: "#ef4444" },
+  {
+    script: "db-backup.sh",
+    target: "Completed in 4m 12s · 2 min ago",
+    status: "success",
+    color: "#22c55e",
+  },
+  {
+    script: "cache-flush.sh",
+    target: "Running on cache-redis-04 · now",
+    status: "pending",
+    color: "#f97316",
+  },
+  {
+    script: "deploy-worker.sh",
+    target: "Rolled back · 18 min ago",
+    status: "success",
+    color: "#22c55e",
+  },
+  {
+    script: "health-check.sh",
+    target: "Failed on worker-q-05 · 32 min ago",
+    status: "failed",
+    color: "#ef4444",
+  },
 ];
 
 const terminalLines = [
@@ -96,10 +127,12 @@ const StatusBadge = ({ status }) => {
   const map = {
     success: "bg-emerald-500/15 text-emerald-300 border border-emerald-500/30",
     pending: "bg-orange-500/15 text-orange-300 border border-orange-500/30",
-    failed:  "bg-rose-500/15 text-rose-300 border border-rose-500/30",
+    failed: "bg-rose-500/15 text-rose-300 border border-rose-500/30",
   };
   return (
-    <span className={`rounded px-2 py-0.5 text-[10px] font-semibold capitalize ${map[status] ?? ""}`}>
+    <span
+      className={`rounded px-2 py-0.5 text-[10px] font-semibold capitalize ${map[status] ?? ""}`}
+    >
       {status}
     </span>
   );
@@ -112,8 +145,12 @@ const UptimeBar = ({ status }) => (
         key={i}
         className={`h-3 w-[3px] rounded-sm ${
           status === "online"
-            ? i < 18 ? "bg-emerald-400" : "bg-rose-500"
-            : i < 14 ? "bg-emerald-400" : "bg-rose-500"
+            ? i < 18
+              ? "bg-emerald-400"
+              : "bg-rose-500"
+            : i < 14
+              ? "bg-emerald-400"
+              : "bg-rose-500"
         }`}
       />
     ))}
@@ -168,7 +205,6 @@ export const Dashboard = () => {
   return (
     <main className="min-h-screen bg-[#0b0e14] px-4 pb-16 pt-24 text-white sm:px-6 lg:px-8">
       <div className="mx-auto w-full max-w-7xl space-y-5">
-
         {/* ── Breadcrumb + Actions ─────────────────────────── */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
@@ -189,7 +225,7 @@ export const Dashboard = () => {
               className="inline-flex items-center gap-2 rounded-lg border border-[#5b5bf5]/40 bg-[#5b5bf5]/10 px-3.5 py-2 text-xs font-semibold text-blue-300 transition hover:bg-[#5b5bf5]/20 disabled:opacity-60"
             >
               <Activity className="h-3.5 w-3.5" />
-              {isLoggingOut ? "Logging out…" : "Deploy Agent"}
+              {isLoggingOut ? "Logging out…" : "Log out"}
             </button>
             <button
               type="button"
@@ -203,13 +239,16 @@ export const Dashboard = () => {
 
         {/* ── Row 1: Network chart + Stat sidebar ──────────── */}
         <div className="grid gap-4 xl:grid-cols-[1fr_260px]">
-
           {/* Network Throughput */}
           <div className="rounded-xl border border-white/10 bg-[#111827] p-5">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-semibold text-white">Network Throughput</p>
-                <p className="text-xs text-gray-500">Ingress vs. Egress · last 24 hours</p>
+                <p className="text-sm font-semibold text-white">
+                  Network Throughput
+                </p>
+                <p className="text-xs text-gray-500">
+                  Ingress vs. Egress · last 24 hours
+                </p>
               </div>
               <div className="flex items-center gap-4 text-xs text-gray-400">
                 <span className="flex items-center gap-1.5">
@@ -237,9 +276,12 @@ export const Dashboard = () => {
                     tickFormatter={(v) => `${v}G`}
                     width={32}
                   />
-                  <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(255,255,255,0.04)" }} />
+                  <Tooltip
+                    content={<CustomTooltip />}
+                    cursor={{ fill: "rgba(255,255,255,0.04)" }}
+                  />
                   <Bar dataKey="ingress" fill="#3b82f6" radius={[3, 3, 0, 0]} />
-                  <Bar dataKey="egress"  fill="#ef4444" radius={[3, 3, 0, 0]} />
+                  <Bar dataKey="egress" fill="#ef4444" radius={[3, 3, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -251,15 +293,19 @@ export const Dashboard = () => {
             <div className="rounded-xl border border-white/10 bg-[#111827] p-4">
               <p className="text-xs text-gray-400">Peak Ingress</p>
               <p className="mt-1 text-3xl font-bold text-white">
-                4.82 <span className="text-sm font-normal text-gray-400">Gbps</span>
+                4.82{" "}
+                <span className="text-sm font-normal text-gray-400">Gbps</span>
               </p>
-              <p className="mt-1 text-xs text-emerald-400">↑ +6.4% vs yesterday</p>
+              <p className="mt-1 text-xs text-emerald-400">
+                ↑ +6.4% vs yesterday
+              </p>
             </div>
             {/* Peak Egress */}
             <div className="rounded-xl border border-white/10 bg-[#111827] p-4">
               <p className="text-xs text-gray-400">Peak Egress</p>
               <p className="mt-1 text-3xl font-bold text-white">
-                2.91 <span className="text-sm font-normal text-gray-400">Gbps</span>
+                2.91{" "}
+                <span className="text-sm font-normal text-gray-400">Gbps</span>
               </p>
               <p className="mt-1 text-xs text-rose-400">↓ −1.2% vs yesterday</p>
             </div>
@@ -291,7 +337,6 @@ export const Dashboard = () => {
 
         {/* ── Row 3: Server table + Resource panel ─────────── */}
         <div className="grid gap-4 xl:grid-cols-[1fr_300px]">
-
           {/* Server Health table */}
           <div className="rounded-xl border border-white/10 bg-[#111827]">
             <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
@@ -316,23 +361,34 @@ export const Dashboard = () => {
                 </thead>
                 <tbody className="divide-y divide-white/5 text-sm">
                   {servers.map((s) => (
-                    <tr key={s.name} className="transition hover:bg-white/[0.02]">
+                    <tr
+                      key={s.name}
+                      className="transition hover:bg-white/[0.02]"
+                    >
                       <td className="px-5 py-3.5">
                         <div className="flex items-center gap-2">
                           <span className="flex h-6 w-6 items-center justify-center rounded border border-white/10 bg-[#0b0e14]">
                             <Server className="h-3 w-3 text-gray-400" />
                           </span>
-                          <span className="font-mono text-xs text-white">{s.name}</span>
+                          <span className="font-mono text-xs text-white">
+                            {s.name}
+                          </span>
                         </div>
                       </td>
-                      <td className="px-5 py-3.5 font-mono text-xs text-gray-400">{s.ip}</td>
+                      <td className="px-5 py-3.5 font-mono text-xs text-gray-400">
+                        {s.ip}
+                      </td>
                       <td className="px-5 py-3.5">
-                        <span className={`flex items-center gap-1.5 text-xs font-semibold ${s.status === "online" ? "text-emerald-400" : "text-rose-400"}`}>
+                        <span
+                          className={`flex items-center gap-1.5 text-xs font-semibold ${s.status === "online" ? "text-emerald-400" : "text-rose-400"}`}
+                        >
                           <StatusDot status={s.status} />
                           {s.status === "online" ? "Online" : "Offline"}
                         </span>
                       </td>
-                      <td className="px-5 py-3.5 text-xs text-gray-300">{s.latency}</td>
+                      <td className="px-5 py-3.5 text-xs text-gray-300">
+                        {s.latency}
+                      </td>
                       <td className="px-5 py-3.5">
                         <UptimeBar status={s.status} />
                       </td>
@@ -345,7 +401,6 @@ export const Dashboard = () => {
 
           {/* Right column */}
           <div className="flex flex-col gap-4">
-
             {/* Resource Utilization */}
             <div className="rounded-xl border border-white/10 bg-[#111827] p-5">
               <p className="font-semibold text-white">Resource Utilization</p>
@@ -378,7 +433,10 @@ export const Dashboard = () => {
               <div className="mt-3 flex justify-center gap-3 text-[10px] text-gray-400">
                 {resourceDonut.map((r) => (
                   <span key={r.name} className="flex items-center gap-1">
-                    <span className="h-2 w-2 rounded-full" style={{ background: r.color }} />
+                    <span
+                      className="h-2 w-2 rounded-full"
+                      style={{ background: r.color }}
+                    />
                     {r.name} {r.value}%
                   </span>
                 ))}
@@ -404,10 +462,14 @@ export const Dashboard = () => {
                     />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between gap-2">
-                        <p className="truncate font-mono text-xs font-semibold text-white">{item.script}</p>
+                        <p className="truncate font-mono text-xs font-semibold text-white">
+                          {item.script}
+                        </p>
                         <StatusBadge status={item.status} />
                       </div>
-                      <p className="mt-0.5 truncate text-[11px] text-gray-500">{item.target}</p>
+                      <p className="mt-0.5 truncate text-[11px] text-gray-500">
+                        {item.target}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -419,17 +481,24 @@ export const Dashboard = () => {
                   <span className="h-2.5 w-2.5 rounded-full bg-rose-500" />
                   <span className="h-2.5 w-2.5 rounded-full bg-yellow-400" />
                   <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
-                  <span className="ml-2 text-[10px] text-gray-600">terminal — bash</span>
+                  <span className="ml-2 text-[10px] text-gray-600">
+                    terminal — bash
+                  </span>
                 </div>
                 {terminalLines.map((line, i) => (
-                  <p key={i} className="text-[10px] leading-5" style={{ color: line.color }}>
+                  <p
+                    key={i}
+                    className="text-[10px] leading-5"
+                    style={{ color: line.color }}
+                  >
                     {line.text}
                   </p>
                 ))}
-                <p className="text-[10px] leading-5 text-emerald-400">{blink ? "█" : " "}</p>
+                <p className="text-[10px] leading-5 text-emerald-400">
+                  {blink ? "█" : " "}
+                </p>
               </div>
             </div>
-
           </div>
         </div>
 
@@ -461,7 +530,6 @@ export const Dashboard = () => {
             </button>
           </div>
         </div>
-
       </div>
     </main>
   );
