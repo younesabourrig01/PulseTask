@@ -4,6 +4,7 @@ export const teamApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     teamInfo: builder.query({
       query: () => `/team/about`,
+      providesTags: ["Team"],
     }),
     createTeam: builder.mutation({
       query: (credentials) => ({
@@ -11,6 +12,7 @@ export const teamApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: credentials,
       }),
+      invalidatesTags: ["Team"],
     }),
     joinTeam: builder.mutation({
       query: (credentials) => ({
@@ -18,31 +20,32 @@ export const teamApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: credentials,
       }),
+      invalidatesTags: ["Team"],
     }),
     generateInvCode: builder.mutation({
       query: () => ({
         url: "/team/generate-inv-code",
-        methode: "POST",
+        method: "POST",
       }),
     }),
     leavTeam: builder.mutation({
       query: () => ({
         url: "/team/leave",
-        methode: "POST",
+        method: "POST",
       }),
       invalidatesTags: ["Team"],
     }),
     deleteTeam: builder.mutation({
       query: () => ({
         url: "/team/delete-team",
-        methode: "DELETE",
+        method: "DELETE",
       }),
       invalidatesTags: ["Team"],
     }),
     updateTeamInfo: builder.mutation({
       query: ({ teamId, credentials }) => ({
         url: `/team/update/${teamId}`,
-        methode: "PATCH",
+        method: "PATCH",
         body: credentials,
       }),
       invalidatesTags: ["Team"],

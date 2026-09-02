@@ -40,7 +40,7 @@ class TeamController extends Controller
         $user = $request->user();
         $request->validate([
             'name' => 'string|required|max:255',
-            'discord_webhook_url' => 'string'
+            'discord_webhook_url' => 'nullable|string'
         ]);
 
         if ($user->team_id !== null) {
@@ -97,7 +97,7 @@ class TeamController extends Controller
     {
         $user = $request->user();
         $request->validate([
-            'invite_code' => 'required|max:6'
+            'invite_code' => 'required|string'
         ]);
 
         if ($user->team_id !== null) {
@@ -140,7 +140,7 @@ class TeamController extends Controller
     public function generateInvCode(Request $request)
     {
         $user = $request->user();
-        $team = $request->team;
+        $team = $user->team;
 
         if (!$team || $team->owner_id !== $user->id) {
             return response()->json([
