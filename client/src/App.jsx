@@ -8,6 +8,8 @@ import { OpenSource } from "./Pages/OpenSource/OpenSource";
 import { Platform } from "./Pages/Platform/Platform";
 import { Dashboard } from "./Pages/Dashboard/Dashboard";
 import { ProtectedRoute } from "./Components/ProtectedRoute";
+import { TeamGuard } from "./Components/TeamGuard";
+import { TeamLobby } from "./Pages/Team/TeamLobby";
 
 function App() {
   const { pathname } = useLocation();
@@ -15,6 +17,7 @@ function App() {
     pathname === "/signin" ||
     pathname === "/signup" ||
     pathname === "/dashboard" ||
+    pathname === "/onboarding" ||
     pathname === "/forgot-password";
 
   return (
@@ -29,7 +32,10 @@ function App() {
 
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/onboarding" element={<TeamLobby />} />
+          <Route element={<TeamGuard />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+          </Route>
         </Route>
       </Routes>
       {!isAuthPage && <Footer />}
