@@ -1,4 +1,5 @@
-﻿import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import {
   BarChart,
   Bar,
@@ -11,18 +12,19 @@ import {
   Cell,
 } from "recharts";
 import {
-  Activity,
   Copy,
-  Play,
   Plus,
   Server,
   Filter,
   Terminal,
-  ChevronRight,
 } from "lucide-react";
-import { useLogoutMutation } from "../../features/auth/authApiSlice";
-import { useNavigate } from "react-router-dom";
+import { selectCurrentUser } from "../../features/auth/authSlice";
+import {
+  useTeamInfoQuery,
+  useGenerateInvCodeMutation,
+} from "../../features/team/teamApiSlice";
 import { toast } from "sonner";
+import { Hero } from "./Hero";
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
 
@@ -179,8 +181,10 @@ const CustomTooltip = ({ active, payload, label }) => {
 // ─── Main Dashboard ───────────────────────────────────────────────────────────
 
 export const Dashboard = () => {
-  const navigate = useNavigate();
-  const [logout, { isLoading: isLoggingOut }] = useLogoutMutation();
+  const currentUser = useSelector(selectCurrentUser);
+  const { data: teamResponse } = useTeamInfoQuery();
+  const [generateInvCode, { isLoading: isGeneratingCode }] =
+    useGenerateInvCodeMutation();
   const [blink, setBlink] = useState(true);
 
   useEffect(() => {
@@ -188,54 +192,31 @@ export const Dashboard = () => {
     return () => clearInterval(id);
   }, []);
 
-  const handleLogout = async () => {
+  const handleCopyInviteCode = async () => {
     try {
-      const response = await logout().unwrap();
-      toast.success(response?.message || "Logged out successfully!");
+      let code = teamResponse?.data?.invite_code;
+      if (!code) {
+        const res = await generateInvCode().unwrap();
+        code = res.invite_code;
+        toast.success("New invite code generated!");
+      }
+      if (code) {
+        await navigator.clipboard.writeText(code);
+        toast.success(`Invite code copied: ${code}`);
+      }
     } catch (err) {
-      console.error("failed", err);
+      console.error("Invite code error", err);
       toast.error(
-        err?.data?.message || err?.error || err?.message || "Logout failed.",
+        err?.data?.message || err?.error || "Failed to get invite code.",
       );
-    } finally {
-      navigate("/");
     }
   };
 
   return (
     <main className="min-h-screen bg-[#0b0e14] px-4 pb-16 pt-24 text-white sm:px-6 lg:px-8">
       <div className="mx-auto w-full max-w-7xl space-y-5">
-        {/* ── Breadcrumb + Actions ─────────────────────────── */}
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="flex items-center gap-1 text-xs text-gray-500">
-              Infrastructure
-              <ChevronRight className="h-3 w-3" />
-              Live Telemetry
-            </p>
-            <h1 className="mt-1 text-2xl font-bold text-white sm:text-3xl">
-              System Health Overview
-            </h1>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={handleLogout}
-              disabled={isLoggingOut}
-              className="inline-flex items-center gap-2 rounded-lg border border-[#5b5bf5]/40 bg-[#5b5bf5]/10 px-3.5 py-2 text-xs font-semibold text-blue-300 transition hover:bg-[#5b5bf5]/20 disabled:opacity-60"
-            >
-              <Activity className="h-3.5 w-3.5" />
-              {isLoggingOut ? "Logging out…" : "Log out"}
-            </button>
-            <button
-              type="button"
-              className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-[#111827] px-3.5 py-2 text-xs font-semibold text-gray-300 transition hover:border-white/20 hover:text-white"
-            >
-              <Play className="h-3.5 w-3.5" />
-              Run Script
-            </button>
-          </div>
-        </div>
+        {/* ── Top Hero Component ─────────────────────────── */}
+        <Hero />
 
         {/* ── Row 1: Network chart + Stat sidebar ──────────── */}
         <div className="grid gap-4 xl:grid-cols-[1fr_260px]">
@@ -504,18 +485,26 @@ export const Dashboard = () => {
 
         {/* ── Footer Actions ────────────────────────────────── */}
         <div className="flex items-center justify-between border-t border-white/10 pt-4">
-          <div className="flex items-center gap-2">
-            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#5b5bf5]/20">
-              <Terminal className="h-3.5 w-3.5 text-[#5b5bf5]" />
+          <div className="flex items-center gap-2.5">
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#5b5bf5]/20 font-bold text-xs text-[#5b5bf5] border border-[#5b5bf5]/30">
+              {currentUser?.name
+                ? currentUser.name.charAt(0).toUpperCase()
+                : <Terminal className="h-4 w-4 text-[#5b5bf5]" />}
             </span>
             <div>
-              <p className="text-xs font-semibold text-white">Alex Dev</p>
-              <p className="text-[10px] text-gray-500">alex@pulsetask.io</p>
+              <p className="text-xs font-semibold text-white">
+                {currentUser?.name || "User"}
+              </p>
+              <p className="text-[10px] text-gray-500">
+                {currentUser?.email || "user@pulsetask.io"}
+              </p>
             </div>
           </div>
           <div className="flex gap-2">
             <button
               type="button"
+              onClick={handleCopyInviteCode}
+              disabled={isGeneratingCode}
               className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-[#111827] px-3.5 py-2 text-xs font-semibold text-gray-300 transition hover:border-white/20 hover:text-white"
             >
               <Copy className="h-3.5 w-3.5" />
