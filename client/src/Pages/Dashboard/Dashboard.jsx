@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import {
   BarChart,
   Bar,
@@ -485,7 +486,11 @@ export const Dashboard = () => {
 
         {/* ── Footer Actions ────────────────────────────────── */}
         <div className="flex items-center justify-between border-t border-white/10 pt-4">
-          <div className="flex items-center gap-2.5">
+          <Link
+            to="/profile"
+            className="flex items-center gap-2.5 rounded-lg p-1.5 transition hover:bg-white/5"
+            title="View Profile"
+          >
             <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#5b5bf5]/20 font-bold text-xs text-[#5b5bf5] border border-[#5b5bf5]/30">
               {currentUser?.name
                 ? currentUser.name.charAt(0).toUpperCase()
@@ -499,7 +504,7 @@ export const Dashboard = () => {
                 {currentUser?.email || "user@pulsetask.io"}
               </p>
             </div>
-          </div>
+          </Link>
           <div className="flex gap-2">
             <button
               type="button"

@@ -10,6 +10,7 @@ import { Dashboard } from "./Pages/Dashboard/Dashboard";
 import { ProtectedRoute } from "./Components/ProtectedRoute";
 import { TeamGuard } from "./Components/TeamGuard";
 import { TeamLobby } from "./Pages/Team/TeamLobby";
+import { UserProfile } from "./Pages/Profile/UserProfile";
 
 function App() {
   const { pathname } = useLocation();
@@ -17,6 +18,7 @@ function App() {
     pathname === "/signin" ||
     pathname === "/signup" ||
     pathname === "/dashboard" ||
+    pathname === "/profile" ||
     pathname === "/onboarding" ||
     pathname === "/forgot-password";
 
@@ -33,6 +35,7 @@ function App() {
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="/onboarding" element={<TeamLobby />} />
+          <Route path="/profile" element={<UserProfile />} />
           <Route element={<TeamGuard />}>
             <Route path="/dashboard" element={<Dashboard />} />
           </Route>

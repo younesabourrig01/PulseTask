@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
-  Activity,
   Copy,
   Users,
   Crown,
   Check,
+  UserCircle,
 } from "lucide-react";
-import { useLogoutMutation } from "../../features/auth/authApiSlice";
 import { selectCurrentUser } from "../../features/auth/authSlice";
 import {
   useTeamInfoQuery,
@@ -17,30 +16,14 @@ import {
 import { toast } from "sonner";
 
 export const Hero = () => {
-  const navigate = useNavigate();
   const currentUser = useSelector(selectCurrentUser);
   const { data: teamResponse, isLoading: isTeamLoading } = useTeamInfoQuery();
   const [generateInvCode, { isLoading: isGeneratingCode }] =
     useGenerateInvCodeMutation();
-  const [logout, { isLoading: isLoggingOut }] = useLogoutMutation();
   const [copied, setCopied] = useState(false);
 
   const teamInfo = teamResponse?.data;
   const members = teamInfo?.members || [];
-
-  const handleLogout = async () => {
-    try {
-      const response = await logout().unwrap();
-      toast.success(response?.message || "Logged out successfully!");
-    } catch (err) {
-      console.error("failed", err);
-      toast.error(
-        err?.data?.message || err?.error || err?.message || "Logout failed.",
-      );
-    } finally {
-      navigate("/");
-    }
-  };
 
   const handleCopyInviteCode = async () => {
     try {
@@ -107,15 +90,13 @@ export const Hero = () => {
               : "Copy Invite Code"}
           </button>
 
-          <button
-            type="button"
-            onClick={handleLogout}
-            disabled={isLoggingOut}
-            className="inline-flex items-center gap-2 rounded-lg border border-rose-500/30 bg-rose-500/10 px-3.5 py-2 text-xs font-semibold text-rose-300 transition hover:bg-rose-500/20 disabled:opacity-60"
+          <Link
+            to="/profile"
+            className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3.5 py-2 text-xs font-semibold text-gray-300 transition hover:bg-white/10 hover:text-white"
           >
-            <Activity className="h-3.5 w-3.5" />
-            {isLoggingOut ? "Logging out…" : "Log out"}
-          </button>
+            <UserCircle className="h-3.5 w-3.5 text-[#7169ff]" />
+            Profile
+          </Link>
         </div>
       </div>
 
