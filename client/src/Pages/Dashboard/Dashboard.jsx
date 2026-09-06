@@ -1,6 +1,4 @@
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
 import {
   BarChart,
   Bar,
@@ -17,15 +15,16 @@ import {
   Plus,
   Server,
   Filter,
-  Terminal,
+  Menu,
+  X,
 } from "lucide-react";
-import { selectCurrentUser } from "../../features/auth/authSlice";
 import {
   useTeamInfoQuery,
   useGenerateInvCodeMutation,
 } from "../../features/team/teamApiSlice";
 import { toast } from "sonner";
 import { Hero } from "./Hero";
+import { DashboardSidebar } from "../../Layout/DashboardSidebar";
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
 
@@ -182,11 +181,11 @@ const CustomTooltip = ({ active, payload, label }) => {
 // ─── Main Dashboard ───────────────────────────────────────────────────────────
 
 export const Dashboard = () => {
-  const currentUser = useSelector(selectCurrentUser);
   const { data: teamResponse } = useTeamInfoQuery();
   const [generateInvCode, { isLoading: isGeneratingCode }] =
     useGenerateInvCodeMutation();
   const [blink, setBlink] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   useEffect(() => {
     const id = setInterval(() => setBlink((b) => !b), 700);
@@ -214,10 +213,42 @@ export const Dashboard = () => {
   };
 
   return (
-    <main className="min-h-screen bg-[#0b0e14] px-4 pb-16 pt-24 text-white sm:px-6 lg:px-8">
-      <div className="mx-auto w-full max-w-7xl space-y-5">
-        {/* ── Top Hero Component ─────────────────────────── */}
-        <Hero />
+    <div className="min-h-screen bg-[#0b0e14] text-white">
+      {/* Sidebar Navigation (Toggleable on any device) */}
+      <DashboardSidebar
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
+
+      {/* Main Content Area (adjusts padding when sidebar is toggled on desktop) */}
+      <div
+        className={`flex min-h-screen flex-col transition-all duration-300 ease-in-out ${
+          sidebarOpen ? "lg:pl-64" : "pl-0"
+        }`}
+      >
+        {/* Universal Top Header with Sidebar Toggle (any device) */}
+        <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-white/10 bg-[#0b0e14]/90 px-4 backdrop-blur sm:px-6">
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setSidebarOpen((prev) => !prev)}
+              className="rounded-lg border border-white/10 p-2 text-gray-300 transition hover:bg-white/5 hover:text-white"
+              aria-label={sidebarOpen ? "Collapse sidebar" : "Open sidebar"}
+              title={sidebarOpen ? "Collapse sidebar" : "Open sidebar"}
+            >
+              {sidebarOpen ? <X size={18} /> : <Menu size={18} />}
+            </button>
+            <span className="text-sm font-extrabold uppercase tracking-wider text-white">
+              Pulse<span className="text-[#5b5bf5]">Task</span>
+            </span>
+          </div>
+        </header>
+
+        {/* Dashboard Main Content */}
+        <main className="flex-1 px-4 pb-16 pt-6 sm:px-6 lg:px-8">
+          <div className="mx-auto w-full max-w-7xl space-y-5">
+            {/* ── Top Hero Component ─────────────────────────── */}
+            <Hero />
 
         {/* ── Row 1: Network chart + Stat sidebar ──────────── */}
         <div className="grid gap-4 xl:grid-cols-[1fr_260px]">
@@ -485,26 +516,10 @@ export const Dashboard = () => {
         </div>
 
         {/* ── Footer Actions ────────────────────────────────── */}
-        <div className="flex items-center justify-between border-t border-white/10 pt-4">
-          <Link
-            to="/profile"
-            className="flex items-center gap-2.5 rounded-lg p-1.5 transition hover:bg-white/5"
-            title="View Profile"
-          >
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#5b5bf5]/20 font-bold text-xs text-[#5b5bf5] border border-[#5b5bf5]/30">
-              {currentUser?.name
-                ? currentUser.name.charAt(0).toUpperCase()
-                : <Terminal className="h-4 w-4 text-[#5b5bf5]" />}
-            </span>
-            <div>
-              <p className="text-xs font-semibold text-white">
-                {currentUser?.name || "User"}
-              </p>
-              <p className="text-[10px] text-gray-500">
-                {currentUser?.email || "user@pulsetask.io"}
-              </p>
-            </div>
-          </Link>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-t border-white/10 pt-4">
+          <p className="text-xs text-gray-500">
+            PulseTask &middot; Cloud Server &amp; Script Automation
+          </p>
           <div className="flex gap-2">
             <button
               type="button"
@@ -526,5 +541,7 @@ export const Dashboard = () => {
         </div>
       </div>
     </main>
+      </div>
+    </div>
   );
 };

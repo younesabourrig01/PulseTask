@@ -29,28 +29,10 @@ import {
   User,
   X,
   AlertTriangle,
+  Upload,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-
-// ── Helpers ──────────────────────────────────────────────────────────────────
-
-const STORAGE_BASE = "http://localhost:8000/storage/";
-
-const getAvatarUrl = (avatar) => {
-  if (!avatar) return null;
-  if (avatar.startsWith("http")) return avatar;
-  return `${STORAGE_BASE}${avatar}`;
-};
-
-const getInitials = (name) => {
-  if (!name) return "U";
-  return name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
-};
+import { getAvatarUrl, getInitials } from "../../utils/avatar";
 
 // ── Sub-components ───────────────────────────────────────────────────────────
 
@@ -145,6 +127,7 @@ export const UserProfile = () => {
   });
   const [avatarPreview, setAvatarPreview] = useState(null);
   const [avatarFile, setAvatarFile] = useState(null);
+  const [removeAvatar, setRemoveAvatar] = useState(false);
 
   // --- Password state ---
   const [passwordForm, setPasswordForm] = useState({
@@ -171,6 +154,7 @@ export const UserProfile = () => {
     });
     setAvatarPreview(null);
     setAvatarFile(null);
+    setRemoveAvatar(false);
     setIsEditing(true);
   };
 
@@ -178,13 +162,44 @@ export const UserProfile = () => {
     setIsEditing(false);
     setAvatarPreview(null);
     setAvatarFile(null);
+    setRemoveAvatar(false);
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const handleAvatarChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    const validTypes = ["image/jpeg", "image/png", "image/jpg"];
+    if (!validTypes.includes(file.type)) {
+      toast.error("Invalid file format. Please upload a JPG, JPEG, or PNG image.");
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error("Image file is too large. Maximum allowed size is 2MB.");
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
+
     setAvatarFile(file);
     setAvatarPreview(URL.createObjectURL(file));
+    setRemoveAvatar(false);
+  };
+
+  const handleClearSelectedAvatar = () => {
+    setAvatarFile(null);
+    setAvatarPreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const handleRemoveAvatar = () => {
+    setAvatarFile(null);
+    setAvatarPreview(null);
+    setRemoveAvatar(true);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    toast.info("Avatar marked for removal. Click 'Save Changes' to apply.");
   };
 
   const handleSaveProfile = async (e) => {
@@ -194,7 +209,11 @@ export const UserProfile = () => {
       formData.append("name", profileForm.name);
     if (profileForm.email !== currentUser?.email)
       formData.append("email", profileForm.email);
-    if (avatarFile) formData.append("avatar", avatarFile);
+    if (avatarFile) {
+      formData.append("avatar", avatarFile);
+    } else if (removeAvatar) {
+      formData.append("remove_avatar", "1");
+    }
 
     try {
       const response = await updateProfile(formData).unwrap();
@@ -208,6 +227,8 @@ export const UserProfile = () => {
       setIsEditing(false);
       setAvatarPreview(null);
       setAvatarFile(null);
+      setRemoveAvatar(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
     } catch (err) {
       toast.error(
         err?.data?.message || err?.error || "Failed to update profile."
@@ -261,7 +282,9 @@ export const UserProfile = () => {
 
   // ── Render ───────────────────────────────────────────────────────────────
 
-  const avatarUrl = avatarPreview || getAvatarUrl(currentUser?.avatar);
+  const avatarUrl = removeAvatar
+    ? null
+    : (avatarPreview || getAvatarUrl(currentUser?.avatar));
 
   return (
     <main className="min-h-screen bg-[#0b0e14] px-4 pb-16 pt-8 text-white sm:px-6 lg:px-8">
@@ -282,12 +305,12 @@ export const UserProfile = () => {
               {avatarUrl ? (
                 <img
                   src={avatarUrl}
-                  alt={currentUser?.name}
+                  alt={currentUser?.name || "User"}
                   className="h-24 w-24 rounded-2xl border-2 border-[#5b5bf5]/40 object-cover shadow-lg shadow-[#5b5bf5]/20"
                 />
               ) : (
                 <div className="grid h-24 w-24 place-items-center rounded-2xl border-2 border-[#5b5bf5]/40 bg-gradient-to-tr from-[#5b5bf5] to-[#8b5cf6] text-3xl font-bold text-white shadow-lg shadow-[#5b5bf5]/20">
-                  {getInitials(currentUser?.name)}
+                  {getInitials(profileForm.name || currentUser?.name)}
                 </div>
               )}
               {isEditing && (
@@ -295,6 +318,7 @@ export const UserProfile = () => {
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
                   className="absolute -bottom-1 -right-1 grid h-8 w-8 place-items-center rounded-full border-2 border-[#111827] bg-[#5b5bf5] text-white shadow transition hover:bg-[#4a4af0]"
+                  title="Upload / Change Avatar"
                 >
                   <Camera size={14} />
                 </button>
@@ -368,6 +392,92 @@ export const UserProfile = () => {
         <SectionCard>
           <SectionTitle icon={User}>Profile Information</SectionTitle>
           <form onSubmit={handleSaveProfile} className="space-y-4">
+            {/* Explicit Avatar Image Input in Edit Mode */}
+            {isEditing && (
+              <div className="rounded-xl border border-white/10 bg-[#0c1118] p-4">
+                <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400">
+                  Profile Avatar Image
+                </label>
+
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+                  {/* Thumbnail Preview */}
+                  <div className="relative shrink-0">
+                    {avatarUrl ? (
+                      <img
+                        src={avatarUrl}
+                        alt="Avatar Preview"
+                        className="h-16 w-16 rounded-xl border-2 border-[#5b5bf5]/50 object-cover shadow-sm"
+                      />
+                    ) : (
+                      <div className="grid h-16 w-16 place-items-center rounded-xl border border-white/10 bg-[#141922] text-lg font-bold text-gray-400">
+                        {getInitials(profileForm.name || currentUser?.name)}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Buttons and guidance */}
+                  <div className="flex-1 space-y-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="inline-flex items-center gap-2 rounded-lg border border-[#5b5bf5]/40 bg-[#5b5bf5]/15 px-3 py-2 text-xs font-semibold text-[#a5a0ff] transition hover:bg-[#5b5bf5]/25 active:scale-95"
+                      >
+                        <Upload size={14} />
+                        {avatarFile ? "Change Selected Image" : "Choose Avatar Image"}
+                      </button>
+
+                      {avatarFile && (
+                        <button
+                          type="button"
+                          onClick={handleClearSelectedAvatar}
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs font-semibold text-gray-300 transition hover:bg-white/10 active:scale-95"
+                        >
+                          <X size={13} />
+                          Clear Selection
+                        </button>
+                      )}
+
+                      {!avatarFile && !removeAvatar && currentUser?.avatar && (
+                        <button
+                          type="button"
+                          onClick={handleRemoveAvatar}
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-xs font-semibold text-rose-300 transition hover:bg-rose-500/20 active:scale-95"
+                        >
+                          <Trash2 size={13} />
+                          Remove Avatar
+                        </button>
+                      )}
+
+                      {removeAvatar && (
+                        <button
+                          type="button"
+                          onClick={() => setRemoveAvatar(false)}
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs font-semibold text-amber-300 transition hover:bg-amber-500/20 active:scale-95"
+                        >
+                          Undo Removal
+                        </button>
+                      )}
+                    </div>
+
+                    <p className="text-[11px] text-gray-400">
+                      {avatarFile ? (
+                        <span className="font-medium text-emerald-400">
+                          Selected file: {avatarFile.name} ({(avatarFile.size / 1024).toFixed(0)} KB)
+                        </span>
+                      ) : removeAvatar ? (
+                        <span className="font-medium text-amber-400">
+                          Current avatar will be deleted when you click Save Changes.
+                        </span>
+                      ) : (
+                        "Upload a JPG, JPEG, or PNG image (max size: 2MB). Replaces your current avatar."
+                      )}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <FormField
               icon={User}
               id="profile-name"
@@ -394,14 +504,24 @@ export const UserProfile = () => {
               placeholder="you@example.com"
             />
             {isEditing && (
-              <button
-                type="submit"
-                disabled={isUpdating}
-                className="inline-flex items-center gap-2 rounded-lg bg-[#5b5bf5] px-4 py-2.5 text-xs font-bold text-white shadow-lg shadow-[#5b5bf5]/20 transition hover:bg-[#4a4af0] active:scale-95 disabled:opacity-60"
-              >
-                <Save size={14} />
-                {isUpdating ? "Saving…" : "Save Changes"}
-              </button>
+              <div className="flex items-center gap-3 pt-2">
+                <button
+                  type="submit"
+                  disabled={isUpdating}
+                  className="inline-flex items-center gap-2 rounded-lg bg-[#5b5bf5] px-4 py-2.5 text-xs font-bold text-white shadow-lg shadow-[#5b5bf5]/20 transition hover:bg-[#4a4af0] active:scale-95 disabled:opacity-60"
+                >
+                  <Save size={14} />
+                  {isUpdating ? "Saving…" : "Save Changes"}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCancelEdit}
+                  disabled={isUpdating}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3.5 py-2.5 text-xs font-semibold text-gray-300 transition hover:bg-white/10 active:scale-95"
+                >
+                  Cancel
+                </button>
+              </div>
             )}
           </form>
         </SectionCard>

@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
 import {
   Copy,
   Users,
   Crown,
   Check,
-  UserCircle,
 } from "lucide-react";
 import { selectCurrentUser } from "../../features/auth/authSlice";
 import {
@@ -14,6 +12,7 @@ import {
   useGenerateInvCodeMutation,
 } from "../../features/team/teamApiSlice";
 import { toast } from "sonner";
+import { getAvatarUrl, getInitials } from "../../utils/avatar";
 
 export const Hero = () => {
   const currentUser = useSelector(selectCurrentUser);
@@ -89,14 +88,6 @@ export const Hero = () => {
               ? `Invite: ${teamInfo.invite_code}`
               : "Copy Invite Code"}
           </button>
-
-          <Link
-            to="/profile"
-            className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3.5 py-2 text-xs font-semibold text-gray-300 transition hover:bg-white/10 hover:text-white"
-          >
-            <UserCircle className="h-3.5 w-3.5 text-[#7169ff]" />
-            Profile
-          </Link>
         </div>
       </div>
 
@@ -125,14 +116,8 @@ export const Hero = () => {
             members.map((m) => {
               const isOwner = m.id === teamInfo?.owner_id;
               const isSelf = m.id === currentUser?.id;
-              const initials = m.name
-                ? m.name
-                    .split(" ")
-                    .map((n) => n[0])
-                    .join("")
-                    .slice(0, 2)
-                    .toUpperCase()
-                : "U";
+              const initials = getInitials(m.name);
+              const mAvatarUrl = getAvatarUrl(m.avatar);
 
               return (
                 <div
@@ -143,15 +128,23 @@ export const Hero = () => {
                       : "border-white/10 bg-[#0b0e14] text-gray-300 hover:border-white/20"
                   }`}
                 >
-                  <div
-                    className={`flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-bold text-white ${
-                      isOwner
-                        ? "bg-amber-500 shadow-sm shadow-amber-500/30"
-                        : "bg-[#5b5bf5]"
-                    }`}
-                  >
-                    {initials}
-                  </div>
+                  {mAvatarUrl ? (
+                    <img
+                      src={mAvatarUrl}
+                      alt={m.name || "Member"}
+                      className="h-6 w-6 rounded-full object-cover border border-white/10"
+                    />
+                  ) : (
+                    <div
+                      className={`flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-bold text-white ${
+                        isOwner
+                          ? "bg-amber-500 shadow-sm shadow-amber-500/30"
+                          : "bg-[#5b5bf5]"
+                      }`}
+                    >
+                      {initials}
+                    </div>
+                  )}
                   <div className="flex flex-col">
                     <span className="font-semibold text-xs text-white leading-none flex items-center gap-1">
                       {m.name}
