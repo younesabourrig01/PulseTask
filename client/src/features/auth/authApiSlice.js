@@ -51,7 +51,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
     update: builder.mutation({
       query: (credentials) => ({
         url: "/update_profile_info",
-        method: "PATCH",
+        method: "POST",
         body: credentials,
       }),
       invalidatesTags: ["User"],

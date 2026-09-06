@@ -158,12 +158,15 @@ class AuthController extends Controller
             'email' => $request->email ?? $user->email,
         ];
 
-        if ($request->hasFile('avatar')) {
-
+        if ($request->boolean('remove_avatar')) {
             if ($user->avatar) {
                 Storage::disk('public')->delete($user->avatar);
             }
-
+            $data['avatar'] = null;
+        } elseif ($request->hasFile('avatar')) {
+            if ($user->avatar) {
+                Storage::disk('public')->delete($user->avatar);
+            }
             $data['avatar'] = $request->file('avatar')->store('users', 'public');
         }
 

@@ -149,7 +149,9 @@ class TeamController extends Controller
             ], 403);
         }
 
-        $inviteCode = 'PT-' . strtoupper(Str::random(6));
+        do {
+            $inviteCode = 'PT-' . strtoupper(Str::random(8));
+        } while (Team::where('invite_code', $inviteCode)->exists());
 
         $team->update([
             'invite_code' => $inviteCode,
