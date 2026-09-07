@@ -69,7 +69,7 @@ class TeamController extends Controller
     {
         $request->validate([
             'name' => 'string|required',
-            'discord_webhook_url' => 'string'
+            'discord_webhook_url' => 'nullable|string'
         ]);
 
         $user = $request->user();

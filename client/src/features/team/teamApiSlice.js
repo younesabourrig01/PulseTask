@@ -27,6 +27,7 @@ export const teamApiSlice = apiSlice.injectEndpoints({
         url: "/team/generate-inv-code",
         method: "POST",
       }),
+      invalidatesTags: ["Team"],
     }),
     leavTeam: builder.mutation({
       query: () => ({

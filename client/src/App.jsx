@@ -12,6 +12,8 @@ import { TeamGuard } from "./Components/TeamGuard";
 import { TeamLobby } from "./Pages/Team/TeamLobby";
 import { UserProfile } from "./Pages/Profile/UserProfile";
 
+import { TeamWorkspace } from "./Pages/Team/TeamWorkspace";
+
 function App() {
   const { pathname } = useLocation();
   const isAuthPage =
@@ -20,6 +22,7 @@ function App() {
     pathname === "/dashboard" ||
     pathname === "/profile" ||
     pathname === "/onboarding" ||
+    pathname === "/team" ||
     pathname === "/forgot-password";
 
   return (
@@ -38,6 +41,7 @@ function App() {
           <Route path="/profile" element={<UserProfile />} />
           <Route element={<TeamGuard />}>
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/team" element={<TeamWorkspace />} />
           </Route>
         </Route>
       </Routes>

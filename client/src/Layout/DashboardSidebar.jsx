@@ -50,9 +50,9 @@ export const DashboardSidebar = ({ isOpen, onClose }) => {
     },
     {
       name: "Team Workspace",
-      to: "/onboarding",
+      to: "/team",
       icon: Users,
-      active: location.pathname === "/onboarding",
+      active: location.pathname === "/team",
     },
   ];
 
