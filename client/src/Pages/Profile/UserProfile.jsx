@@ -15,7 +15,6 @@ import {
 import { apiSlice } from "../../app/api/apiSlice";
 import { toast } from "sonner";
 import {
-  ArrowLeft,
   Camera,
   Check,
   Eye,
@@ -31,7 +30,6 @@ import {
   AlertTriangle,
   Upload,
 } from "lucide-react";
-import { Link } from "react-router-dom";
 import { getAvatarUrl, getInitials } from "../../utils/avatar";
 
 // ── Sub-components ───────────────────────────────────────────────────────────
@@ -287,16 +285,8 @@ export const UserProfile = () => {
     : (avatarPreview || getAvatarUrl(currentUser?.avatar));
 
   return (
-    <main className="min-h-screen bg-[#0b0e14] px-4 pb-16 pt-8 text-white sm:px-6 lg:px-8">
-      {/* Back button */}
-      <Link
-        to="/dashboard"
-        className="fixed left-4 top-4 z-10 grid h-11 w-11 place-items-center rounded-lg border border-white/10 bg-[#141922]/90 text-gray-300 shadow-lg shadow-black/20 backdrop-blur transition hover:border-white/25 hover:text-white sm:left-6 sm:top-6"
-      >
-        <ArrowLeft size={20} />
-      </Link>
-
-      <div className="mx-auto w-full max-w-2xl space-y-5 pt-14">
+    <div className="px-4 pb-16 pt-8 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-2xl space-y-5">
         {/* ── Header / Avatar ─────────────────────────────────── */}
         <SectionCard>
           <div className="flex flex-col items-center gap-5 sm:flex-row sm:items-start">
@@ -674,7 +664,7 @@ export const UserProfile = () => {
           )}
         </SectionCard>
       </div>
-    </main>
+    </div>
   );
 };
 

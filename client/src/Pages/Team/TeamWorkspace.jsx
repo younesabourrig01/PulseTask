@@ -12,8 +12,6 @@ import {
   Trash2,
   LogOut,
   AlertTriangle,
-  Menu,
-  X,
   MessageSquare,
   Clock,
   Sparkles,
@@ -29,7 +27,7 @@ import {
   useDeleteTeamMutation,
 } from "../../features/team/teamApiSlice";
 import { apiSlice } from "../../app/api/apiSlice";
-import { DashboardSidebar } from "../../Layout/DashboardSidebar";
+
 import { getAvatarUrl, getInitials } from "../../utils/avatar";
 import { toast } from "sonner";
 
@@ -38,8 +36,6 @@ export const TeamWorkspace = () => {
   const navigate = useNavigate();
   const currentUser = useSelector(selectCurrentUser);
 
-  // Sidebar toggle state (consistent with Dashboard)
-  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   // Team API Query
   const {
@@ -206,59 +202,8 @@ export const TeamWorkspace = () => {
   const expiryInfo = getInviteCodeExpiryInfo();
 
   return (
-    <div className="min-h-screen bg-[#0b0e14] text-white">
-      {/* Sidebar Navigation */}
-      <DashboardSidebar
-        isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-      />
-
-      {/* Main Content Area */}
-      <div
-        className={`flex min-h-screen flex-col transition-all duration-300 ease-in-out ${
-          sidebarOpen ? "lg:pl-64" : "pl-0"
-        }`}
-      >
-        {/* Top Header with Sidebar Toggle */}
-        <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-white/10 bg-[#0b0e14]/90 px-4 backdrop-blur sm:px-6">
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={() => setSidebarOpen((prev) => !prev)}
-              className="rounded-lg border border-white/10 p-2 text-gray-300 transition hover:bg-white/5 hover:text-white"
-              aria-label={sidebarOpen ? "Collapse sidebar" : "Open sidebar"}
-              title={sidebarOpen ? "Collapse sidebar" : "Open sidebar"}
-            >
-              {sidebarOpen ? <X size={18} /> : <Menu size={18} />}
-            </button>
-            <span className="text-sm font-extrabold uppercase tracking-wider text-white">
-              Pulse<span className="text-[#5b5bf5]">Task</span>
-              <span className="ml-2 text-xs font-normal text-gray-400">
-                / Team Workspace
-              </span>
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => refetch()}
-              disabled={isTeamFetching}
-              className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-gray-300 transition hover:bg-white/10 hover:text-white disabled:opacity-50"
-              title="Refresh team data"
-            >
-              <RefreshCw
-                size={13}
-                className={isTeamFetching ? "animate-spin text-[#7169ff]" : ""}
-              />
-              <span className="hidden sm:inline">Refresh</span>
-            </button>
-          </div>
-        </header>
-
-        {/* Page Content */}
-        <main className="flex-1 px-4 pb-16 pt-6 sm:px-6 lg:px-8">
-          <div className="mx-auto w-full max-w-7xl space-y-6">
+    <div className="px-4 pb-16 pt-6 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-7xl space-y-6">
             {/* Loading State */}
             {isTeamLoading ? (
               <div className="flex h-64 flex-col items-center justify-center rounded-2xl border border-white/10 bg-[#111827]">
@@ -810,8 +755,6 @@ export const TeamWorkspace = () => {
               </>
             )}
           </div>
-        </main>
-      </div>
 
       {/* ── Modal: Leave Team Confirmation ─────────────────────────────────── */}
       {showLeaveModal && (

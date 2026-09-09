@@ -35,6 +35,12 @@ export const DashboardSidebar = ({ isOpen, onClose }) => {
     }
   };
 
+  const handleNavClick = () => {
+    if (typeof window !== "undefined" && window.innerWidth < 1024) {
+      onClose();
+    }
+  };
+
   const navItems = [
     {
       name: "Dashboard",
@@ -77,7 +83,7 @@ export const DashboardSidebar = ({ isOpen, onClose }) => {
         <div className="flex h-14 items-center border-b border-white/10 px-5">
           <Link
             to="/dashboard"
-            onClick={onClose}
+            onClick={handleNavClick}
             className="flex items-center gap-2.5 transition hover:opacity-90"
           >
             <img src={Icon} alt="PulseTask Logo" className="h-6 w-6 object-contain" />
@@ -99,7 +105,7 @@ export const DashboardSidebar = ({ isOpen, onClose }) => {
                 <Link
                   key={item.name}
                   to={item.to}
-                  onClick={onClose}
+                  onClick={handleNavClick}
                   className={`group flex items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-medium transition ${
                     item.active
                       ? "bg-[#5b5bf5] text-white shadow-lg shadow-[#5b5bf5]/25"

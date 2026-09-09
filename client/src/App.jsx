@@ -7,6 +7,7 @@ import { ForgotPassword } from "./Pages/Auth/ForgotPassword";
 import { OpenSource } from "./Pages/OpenSource/OpenSource";
 import { Platform } from "./Pages/Platform/Platform";
 import { Dashboard } from "./Pages/Dashboard/Dashboard";
+import { DashboardLayout } from "./Layout/DashboardLayout";
 import { ProtectedRoute } from "./Components/ProtectedRoute";
 import { TeamGuard } from "./Components/TeamGuard";
 import { TeamLobby } from "./Pages/Team/TeamLobby";
@@ -38,10 +39,12 @@ function App() {
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="/onboarding" element={<TeamLobby />} />
-          <Route path="/profile" element={<UserProfile />} />
-          <Route element={<TeamGuard />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/team" element={<TeamWorkspace />} />
+          <Route element={<DashboardLayout />}>
+            <Route path="/profile" element={<UserProfile />} />
+            <Route element={<TeamGuard />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/team" element={<TeamWorkspace />} />
+            </Route>
           </Route>
         </Route>
       </Routes>

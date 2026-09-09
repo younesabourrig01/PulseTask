@@ -10,21 +10,12 @@ import {
   Pie,
   Cell,
 } from "recharts";
-import {
-  Copy,
-  Plus,
-  Server,
-  Filter,
-  Menu,
-  X,
-} from "lucide-react";
+import { Copy, Plus, Server } from "lucide-react";
 import {
   useTeamInfoQuery,
   useGenerateInvCodeMutation,
 } from "../../features/team/teamApiSlice";
 import { toast } from "sonner";
-import { Hero } from "./Hero";
-import { DashboardSidebar } from "../../Layout/DashboardSidebar";
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
 
@@ -65,12 +56,7 @@ const servers = [
   { name: "prod-db-01", ip: "10.0.1.4", status: "online", latency: "18ms" },
   { name: "prod-api-02", ip: "10.0.2.11", status: "online", latency: "22ms" },
   { name: "staging-web-03", ip: "10.0.3.8", status: "online", latency: "31ms" },
-  {
-    name: "cache-redis-04",
-    ip: "10.0.4.22",
-    status: "online",
-    latency: "12ms",
-  },
+  { name: "cache-redis-04", ip: "10.0.4.22", status: "online", latency: "12ms" },
   { name: "worker-q-05", ip: "10.0.5.7", status: "offline", latency: "—" },
 ];
 
@@ -81,30 +67,10 @@ const resourceDonut = [
 ];
 
 const execLog = [
-  {
-    script: "db-backup.sh",
-    target: "Completed in 4m 12s · 2 min ago",
-    status: "success",
-    color: "#22c55e",
-  },
-  {
-    script: "cache-flush.sh",
-    target: "Running on cache-redis-04 · now",
-    status: "pending",
-    color: "#f97316",
-  },
-  {
-    script: "deploy-worker.sh",
-    target: "Rolled back · 18 min ago",
-    status: "success",
-    color: "#22c55e",
-  },
-  {
-    script: "health-check.sh",
-    target: "Failed on worker-q-05 · 32 min ago",
-    status: "failed",
-    color: "#ef4444",
-  },
+  { script: "db-backup.sh", target: "Completed in 4m 12s · 2 min ago", status: "success", color: "#22c55e" },
+  { script: "cache-flush.sh", target: "Running on cache-redis-04 · now", status: "pending", color: "#f97316" },
+  { script: "deploy-worker.sh", target: "Rolled back · 18 min ago", status: "success", color: "#22c55e" },
+  { script: "health-check.sh", target: "Failed on worker-q-05 · 32 min ago", status: "failed", color: "#ef4444" },
 ];
 
 const terminalLines = [
@@ -132,9 +98,7 @@ const StatusBadge = ({ status }) => {
     failed: "bg-rose-500/15 text-rose-300 border border-rose-500/30",
   };
   return (
-    <span
-      className={`rounded px-2 py-0.5 text-[10px] font-semibold capitalize ${map[status] ?? ""}`}
-    >
+    <span className={`rounded px-2 py-0.5 text-[10px] font-semibold capitalize ${map[status] ?? ""}`}>
       {status}
     </span>
   );
@@ -147,12 +111,8 @@ const UptimeBar = ({ status }) => (
         key={i}
         className={`h-3 w-[3px] rounded-sm ${
           status === "online"
-            ? i < 18
-              ? "bg-emerald-400"
-              : "bg-rose-500"
-            : i < 14
-              ? "bg-emerald-400"
-              : "bg-rose-500"
+            ? i < 18 ? "bg-emerald-400" : "bg-rose-500"
+            : i < 14 ? "bg-emerald-400" : "bg-rose-500"
         }`}
       />
     ))}
@@ -182,10 +142,8 @@ const CustomTooltip = ({ active, payload, label }) => {
 
 export const Dashboard = () => {
   const { data: teamResponse } = useTeamInfoQuery();
-  const [generateInvCode, { isLoading: isGeneratingCode }] =
-    useGenerateInvCodeMutation();
+  const [generateInvCode, { isLoading: isGeneratingCode }] = useGenerateInvCodeMutation();
   const [blink, setBlink] = useState(true);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   useEffect(() => {
     const id = setInterval(() => setBlink((b) => !b), 700);
@@ -206,342 +164,190 @@ export const Dashboard = () => {
       }
     } catch (err) {
       console.error("Invite code error", err);
-      toast.error(
-        err?.data?.message || err?.error || "Failed to get invite code.",
-      );
+      toast.error("Failed to copy invite code");
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#0b0e14] text-white">
-      {/* Sidebar Navigation (Toggleable on any device) */}
-      <DashboardSidebar
-        isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-      />
-
-      {/* Main Content Area (adjusts padding when sidebar is toggled on desktop) */}
-      <div
-        className={`flex min-h-screen flex-col transition-all duration-300 ease-in-out ${
-          sidebarOpen ? "lg:pl-64" : "pl-0"
-        }`}
-      >
-        {/* Universal Top Header with Sidebar Toggle (any device) */}
-        <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-white/10 bg-[#0b0e14]/90 px-4 backdrop-blur sm:px-6">
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={() => setSidebarOpen((prev) => !prev)}
-              className="rounded-lg border border-white/10 p-2 text-gray-300 transition hover:bg-white/5 hover:text-white"
-              aria-label={sidebarOpen ? "Collapse sidebar" : "Open sidebar"}
-              title={sidebarOpen ? "Collapse sidebar" : "Open sidebar"}
-            >
-              {sidebarOpen ? <X size={18} /> : <Menu size={18} />}
-            </button>
-            <span className="text-sm font-extrabold uppercase tracking-wider text-white">
-              Pulse<span className="text-[#5b5bf5]">Task</span>
-            </span>
+    <div className="px-4 pb-16 pt-6 sm:px-6 lg:px-8">
+    <div className="grid gap-4 xl:grid-cols-[1fr_260px]">
+      {/* Network Throughput */}
+      <div className="rounded-xl border border-white/10 bg-[#111827] p-5">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-semibold text-white">Network Throughput</p>
+            <p className="text-xs text-gray-500">Ingress vs. Egress · last 24 hours</p>
           </div>
-        </header>
-
-        {/* Dashboard Main Content */}
-        <main className="flex-1 px-4 pb-16 pt-6 sm:px-6 lg:px-8">
-          <div className="mx-auto w-full max-w-7xl space-y-5">
-            {/* ── Top Hero Component ─────────────────────────── */}
-            <Hero />
-
-        {/* ── Row 1: Network chart + Stat sidebar ──────────── */}
-        <div className="grid gap-4 xl:grid-cols-[1fr_260px]">
-          {/* Network Throughput */}
-          <div className="rounded-xl border border-white/10 bg-[#111827] p-5">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-semibold text-white">
-                  Network Throughput
-                </p>
-                <p className="text-xs text-gray-500">
-                  Ingress vs. Egress · last 24 hours
-                </p>
-              </div>
-              <div className="flex items-center gap-4 text-xs text-gray-400">
-                <span className="flex items-center gap-1.5">
-                  <span className="h-2 w-2 rounded-full bg-blue-500" /> Ingress
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <span className="h-2 w-2 rounded-full bg-rose-500" /> Egress
-                </span>
-              </div>
-            </div>
-            <div className="mt-4 h-52">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={networkData} barGap={3} barCategoryGap="30%">
-                  <XAxis
-                    dataKey="time"
-                    tick={{ fill: "#6b7280", fontSize: 10 }}
-                    axisLine={false}
-                    tickLine={false}
-                    tickFormatter={(v) => `${v}h`}
-                  />
-                  <YAxis
-                    tick={{ fill: "#6b7280", fontSize: 10 }}
-                    axisLine={false}
-                    tickLine={false}
-                    tickFormatter={(v) => `${v}G`}
-                    width={32}
-                  />
-                  <Tooltip
-                    content={<CustomTooltip />}
-                    cursor={{ fill: "rgba(255,255,255,0.04)" }}
-                  />
-                  <Bar dataKey="ingress" fill="#3b82f6" radius={[3, 3, 0, 0]} />
-                  <Bar dataKey="egress" fill="#ef4444" radius={[3, 3, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-
-          {/* Right stat cards */}
-          <div className="flex flex-col gap-4">
-            {/* Peak Ingress */}
-            <div className="rounded-xl border border-white/10 bg-[#111827] p-4">
-              <p className="text-xs text-gray-400">Peak Ingress</p>
-              <p className="mt-1 text-3xl font-bold text-white">
-                4.82{" "}
-                <span className="text-sm font-normal text-gray-400">Gbps</span>
-              </p>
-              <p className="mt-1 text-xs text-emerald-400">
-                ↑ +6.4% vs yesterday
-              </p>
-            </div>
-            {/* Peak Egress */}
-            <div className="rounded-xl border border-white/10 bg-[#111827] p-4">
-              <p className="text-xs text-gray-400">Peak Egress</p>
-              <p className="mt-1 text-3xl font-bold text-white">
-                2.91{" "}
-                <span className="text-sm font-normal text-gray-400">Gbps</span>
-              </p>
-              <p className="mt-1 text-xs text-rose-400">↓ −1.2% vs yesterday</p>
-            </div>
-            {/* Active Connections */}
-            <div className="flex-1 rounded-xl border border-white/10 bg-[#111827] p-4">
-              <p className="text-xs text-gray-400">Active Connections</p>
-              <MiniConnections />
-              <p className="text-sm text-white">
-                <span className="font-bold text-blue-300">12,405</span>{" "}
-                <span className="text-xs text-gray-500">concurrent</span>
-              </p>
-            </div>
+          <div className="flex items-center gap-4 text-xs text-gray-400">
+            <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-blue-500" /> Ingress</span>
+            <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-rose-500" /> Egress</span>
           </div>
         </div>
-
-        {/* ── Stat Strip ───────────────────────────────────── */}
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {statStrip.map(({ label, value, sub }) => (
-            <div
-              key={label}
-              className="rounded-xl border border-white/10 bg-[#111827] p-5"
-            >
-              <p className="text-xs font-medium text-gray-400">{label}</p>
-              <p className="mt-3 text-3xl font-bold text-white">{value}</p>
-              {sub && <p className="mt-1 text-xs text-gray-500">{sub}</p>}
-            </div>
-          ))}
+        <div className="mt-4 h-52">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={networkData} barGap={3} barCategoryGap="30%">
+              <XAxis dataKey="time" tick={{ fill: "#6b7280", fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={(v) => `${v}h`} />
+              <YAxis tick={{ fill: "#6b7280", fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={(v) => `${v}G`} width={32} />
+              <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(255,255,255,0.04)" }} />
+              <Bar dataKey="ingress" fill="#3b82f6" radius={[3, 3, 0, 0]} />
+              <Bar dataKey="egress" fill="#ef4444" radius={[3, 3, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
         </div>
+      </div>
 
-        {/* ── Row 3: Server table + Resource panel ─────────── */}
-        <div className="grid gap-4 xl:grid-cols-[1fr_300px]">
-          {/* Server Health table */}
-          <div className="rounded-xl border border-white/10 bg-[#111827]">
-            <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
-              <p className="font-semibold text-white">Server Health</p>
-              <button
-                type="button"
-                className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-[#0b0e14] px-3 py-1.5 text-xs font-semibold text-gray-300 transition hover:border-white/20"
-              >
-                <Filter className="h-3 w-3" /> Filter
-              </button>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[580px]">
-                <thead>
-                  <tr className="border-b border-white/5 text-[10px] font-semibold uppercase tracking-wider text-gray-500">
-                    <th className="px-5 py-3 text-left">Server</th>
-                    <th className="px-5 py-3 text-left">IP Address</th>
-                    <th className="px-5 py-3 text-left">Status</th>
-                    <th className="px-5 py-3 text-left">Latency</th>
-                    <th className="px-5 py-3 text-left">Uptime</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/5 text-sm">
-                  {servers.map((s) => (
-                    <tr
-                      key={s.name}
-                      className="transition hover:bg-white/[0.02]"
-                    >
-                      <td className="px-5 py-3.5">
-                        <div className="flex items-center gap-2">
-                          <span className="flex h-6 w-6 items-center justify-center rounded border border-white/10 bg-[#0b0e14]">
-                            <Server className="h-3 w-3 text-gray-400" />
-                          </span>
-                          <span className="font-mono text-xs text-white">
-                            {s.name}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-5 py-3.5 font-mono text-xs text-gray-400">
-                        {s.ip}
-                      </td>
-                      <td className="px-5 py-3.5">
-                        <span
-                          className={`flex items-center gap-1.5 text-xs font-semibold ${s.status === "online" ? "text-emerald-400" : "text-rose-400"}`}
-                        >
-                          <StatusDot status={s.status} />
-                          {s.status === "online" ? "Online" : "Offline"}
-                        </span>
-                      </td>
-                      <td className="px-5 py-3.5 text-xs text-gray-300">
-                        {s.latency}
-                      </td>
-                      <td className="px-5 py-3.5">
-                        <UptimeBar status={s.status} />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+      {/* Right stat cards */}
+      <div className="flex flex-col gap-4">
+        <div className="rounded-xl border border-white/10 bg-[#111827] p-4">
+          <p className="text-xs text-gray-400">Peak Ingress</p>
+          <p className="mt-1 text-3xl font-bold text-white">4.82 <span className="text-sm font-normal text-gray-400">Gbps</span></p>
+          <p className="mt-1 text-xs text-emerald-400">↑ +6.4% vs yesterday</p>
+        </div>
+        <div className="rounded-xl border border-white/10 bg-[#111827] p-4">
+          <p className="text-xs text-gray-400">Peak Egress</p>
+          <p className="mt-1 text-3xl font-bold text-white">2.91 <span className="text-sm font-normal text-gray-400">Gbps</span></p>
+          <p className="mt-1 text-xs text-rose-400">↓ −1.2% vs yesterday</p>
+        </div>
+        <div className="flex-1 rounded-xl border border-white/10 bg-[#111827] p-4">
+          <p className="text-xs text-gray-400">Active Connections</p>
+          <MiniConnections />
+          <p className="text-sm text-white"><span className="font-bold text-blue-300">12,405</span> <span className="text-xs text-gray-500">concurrent</span></p>
+        </div>
+      </div>
+
+      {/* Stat Strip */}
+      <div className="col-span-full grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {statStrip.map(({ label, value, sub }) => (
+          <div key={label} className="rounded-xl border border-white/10 bg-[#111827] p-5">
+            <p className="text-xs font-medium text-gray-400">{label}</p>
+            <p className="mt-3 text-3xl font-bold text-white">{value}</p>
+            {sub && <p className="mt-1 text-xs text-gray-500">{sub}</p>}
           </div>
+        ))}
+      </div>
 
-          {/* Right column */}
-          <div className="flex flex-col gap-4">
-            {/* Resource Utilization */}
-            <div className="rounded-xl border border-white/10 bg-[#111827] p-5">
-              <p className="font-semibold text-white">Resource Utilization</p>
-              <p className="text-xs text-gray-500">Cluster average</p>
-              <div className="relative mx-auto mt-3 h-36 w-36">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={resourceDonut}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={46}
-                      outerRadius={62}
-                      startAngle={90}
-                      endAngle={-270}
-                      dataKey="value"
-                      strokeWidth={0}
-                    >
-                      {resourceDonut.map((entry) => (
-                        <Cell key={entry.name} fill={entry.color} />
-                      ))}
-                    </Pie>
-                  </PieChart>
-                </ResponsiveContainer>
-                <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-                  <span className="text-xl font-bold text-white">42%</span>
-                  <span className="text-[10px] text-gray-500">Avg load</span>
-                </div>
-              </div>
-              <div className="mt-3 flex justify-center gap-3 text-[10px] text-gray-400">
-                {resourceDonut.map((r) => (
-                  <span key={r.name} className="flex items-center gap-1">
-                    <span
-                      className="h-2 w-2 rounded-full"
-                      style={{ background: r.color }}
-                    />
-                    {r.name} {r.value}%
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {/* Live Execution Log */}
-            <div className="flex-1 rounded-xl border border-white/10 bg-[#111827] p-5">
-              <div className="mb-4 flex items-center justify-between">
-                <p className="font-semibold text-white">Live Execution Log</p>
-                <span className="flex items-center gap-1 text-[10px] font-semibold text-emerald-400">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                  Live
-                </span>
-              </div>
-
-              <div className="space-y-3">
-                {execLog.map((item) => (
-                  <div key={item.script} className="flex items-start gap-2.5">
-                    <span
-                      className="mt-0.5 h-2 w-2 flex-shrink-0 rounded-full"
-                      style={{ background: item.color }}
-                    />
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center justify-between gap-2">
-                        <p className="truncate font-mono text-xs font-semibold text-white">
-                          {item.script}
-                        </p>
-                        <StatusBadge status={item.status} />
-                      </div>
-                      <p className="mt-0.5 truncate text-[11px] text-gray-500">
-                        {item.target}
-                      </p>
+      {/* Server Health + Resource panel */}
+      <div className="col-span-full grid gap-4 xl:grid-cols-[1fr_300px]">
+        <div className="rounded-xl border border-white/10 bg-[#111827]">
+          <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
+            <p className="font-semibold text-white">Server Health</p>
+          </div>
+          <table className="w-full">
+            <thead className="sr-only">
+              <tr><th>Server</th><th>IP</th><th>Status</th><th>Latency</th><th>Uptime</th></tr>
+            </thead>
+            <tbody className="divide-y divide-white/5 text-sm">
+              {servers.map((s) => (
+                <tr key={s.name} className="transition hover:bg-white/[0.02]">
+                  <td className="px-5 py-3.5">
+                    <div className="flex items-center gap-2">
+                      <span className="flex h-6 w-6 items-center justify-center rounded border border-white/10 bg-[#0b0e14]">
+                        <Server className="h-3 w-3 text-gray-400" />
+                      </span>
+                      <span className="font-mono text-xs text-white">{s.name}</span>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  </td>
+                  <td className="px-5 py-3.5 font-mono text-xs text-gray-400">{s.ip}</td>
+                  <td className="px-5 py-3.5">
+                    <span className={`flex items-center gap-1.5 text-xs font-semibold ${s.status === "online" ? "text-emerald-400" : "text-rose-400"}`}>
+                      <StatusDot status={s.status} />{s.status === "online" ? "Online" : "Offline"}
+                    </span>
+                  </td>
+                  <td className="px-5 py-3.5 text-xs text-gray-300">{s.latency}</td>
+                  <td className="px-5 py-3.5"><UptimeBar status={s.status} /></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
-              {/* Terminal block */}
-              <div className="mt-4 rounded-lg bg-[#060809] p-3 font-mono">
-                <div className="mb-2 flex gap-1.5">
-                  <span className="h-2.5 w-2.5 rounded-full bg-rose-500" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-yellow-400" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
-                  <span className="ml-2 text-[10px] text-gray-600">
-                    terminal — bash
-                  </span>
-                </div>
-                {terminalLines.map((line, i) => (
-                  <p
-                    key={i}
-                    className="text-[10px] leading-5"
-                    style={{ color: line.color }}
-                  >
-                    {line.text}
-                  </p>
-                ))}
-                <p className="text-[10px] leading-5 text-emerald-400">
-                  {blink ? "█" : " "}
-                </p>
+        <div className="flex flex-col gap-4">
+          {/* Resource Utilization */}
+          <div className="rounded-xl border border-white/10 bg-[#111827] p-5">
+            <p className="font-semibold text-white">Resource Utilization</p>
+            <p className="text-xs text-gray-500">Cluster average</p>
+            <div className="relative mx-auto mt-3 h-36 w-36">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie data={resourceDonut} cx="50%" cy="50%" innerRadius={46} outerRadius={62} startAngle={90} endAngle={-270} dataKey="value" strokeWidth={0}>
+                    {resourceDonut.map((entry) => (<Cell key={entry.name} fill={entry.color} />))}
+                  </Pie>
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+                <span className="text-xl font-bold text-white">42%</span>
+                <span className="text-[10px] text-gray-500">Avg load</span>
               </div>
+            </div>
+            <div className="mt-3 flex justify-center gap-3 text-[10px] text-gray-400">
+              {resourceDonut.map((r) => (
+                <span key={r.name} className="flex items-center gap-1">
+                  <span className="h-2 w-2 rounded-full" style={{ background: r.color }} />
+                  {r.name} {r.value}%
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Live Execution Log */}
+          <div className="flex-1 rounded-xl border border-white/10 bg-[#111827] p-5">
+            <div className="mb-4 flex items-center justify-between">
+              <p className="font-semibold text-white">Live Execution Log</p>
+              <span className="flex items-center gap-1 text-[10px] font-semibold text-emerald-400">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" /> Live
+              </span>
+            </div>
+            <div className="space-y-3">
+              {execLog.map((item) => (
+                <div key={item.script} className="flex items-start gap-2.5">
+                  <span className="mt-0.5 h-2 w-2 flex-shrink-0 rounded-full" style={{ background: item.color }} />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="truncate font-mono text-xs font-semibold text-white">{item.script}</p>
+                      <StatusBadge status={item.status} />
+                    </div>
+                    <p className="mt-0.5 truncate text-[11px] text-gray-500">{item.target}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-4 rounded-lg bg-[#060809] p-3 font-mono">
+              <div className="mb-2 flex gap-1.5">
+                <span className="h-2.5 w-2.5 rounded-full bg-rose-500" />
+                <span className="h-2.5 w-2.5 rounded-full bg-yellow-400" />
+                <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
+                <span className="ml-2 text-[10px] text-gray-600">terminal — bash</span>
+              </div>
+              {terminalLines.map((line, i) => (
+                <p key={i} className="text-[10px] leading-5" style={{ color: line.color }}>{line.text}</p>
+              ))}
+              <p className="text-[10px] leading-5 text-emerald-400">{blink ? "█" : " "}</p>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* ── Footer Actions ────────────────────────────────── */}
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-t border-white/10 pt-4">
-          <p className="text-xs text-gray-500">
-            PulseTask &middot; Cloud Server &amp; Script Automation
-          </p>
-          <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={handleCopyInviteCode}
-              disabled={isGeneratingCode}
-              className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-[#111827] px-3.5 py-2 text-xs font-semibold text-gray-300 transition hover:border-white/20 hover:text-white"
-            >
-              <Copy className="h-3.5 w-3.5" />
-              Invite Code
-            </button>
-            <button
-              type="button"
-              className="inline-flex items-center gap-2 rounded-lg bg-[#5b5bf5] px-3.5 py-2 text-xs font-semibold text-white transition hover:bg-[#4a4af0]"
-            >
-              <Plus className="h-3.5 w-3.5" />
-              Add Server
-            </button>
-          </div>
+      {/* Footer Actions */}
+      <div className="col-span-full flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-t border-white/10 pt-4">
+        <p className="text-xs text-gray-500">PulseTask · Cloud Server &amp; Script Automation</p>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={handleCopyInviteCode}
+            disabled={isGeneratingCode}
+            className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-[#111827] px-3.5 py-2 text-xs font-semibold text-gray-300 transition hover:border-white/20 hover:text-white"
+          >
+            <Copy className="h-3.5 w-3.5" /> Invite Code
+          </button>
+          <button
+            type="button"
+            className="inline-flex items-center gap-2 rounded-lg bg-[#5b5bf5] px-3.5 py-2 text-xs font-semibold text-white transition hover:bg-[#4a4af0]"
+          >
+            <Plus className="h-3.5 w-3.5" /> Add Server
+          </button>
         </div>
       </div>
-    </main>
-      </div>
+    </div>
     </div>
   );
 };
