@@ -33,6 +33,7 @@ export const DashboardLayout = () => {
   // Compute breadcrumb subtitle based on pathname
   const getPageTitle = () => {
     if (location.pathname.startsWith("/team")) return "/ Team Workspace";
+    if (location.pathname.startsWith("/servers")) return "/ Servers";
     if (location.pathname.startsWith("/profile")) return "/ Profile";
     return "";
   };

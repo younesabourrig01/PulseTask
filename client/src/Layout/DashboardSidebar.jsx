@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { LayoutDashboard, Users, User, LogOut } from "lucide-react";
+import { LayoutDashboard, Server, Users, User, LogOut } from "lucide-react";
 import { selectCurrentUser } from "../features/auth/authSlice";
 import { useLogoutMutation } from "../features/auth/authApiSlice";
 import { getAvatarUrl, getInitials } from "../utils/avatar";
@@ -47,6 +47,12 @@ export const DashboardSidebar = ({ isOpen, onClose }) => {
       to: "/dashboard",
       icon: LayoutDashboard,
       active: location.pathname === "/dashboard",
+    },
+    {
+      name: "Servers",
+      to: "/servers",
+      icon: Server,
+      active: location.pathname.startsWith("/servers"),
     },
     {
       name: "Profile",

@@ -4,6 +4,10 @@ export const serversApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getServers: builder.query({
       query: () => "/servers",
+      providesTags: (result) => [
+        { type: "Server", id: "LIST" },
+        ...(result?.servers?.data || []).map(({ id }) => ({ type: "Server", id })),
+      ],
     }),
     createServer: builder.mutation({
       query: (credentials) => ({
@@ -11,6 +15,7 @@ export const serversApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: credentials,
       }),
+      invalidatesTags: [{ type: "Server", id: "LIST" }],
     }),
     showServer: builder.query({
       query: (serverId) => `/servers/${serverId}`,
@@ -20,7 +25,7 @@ export const serversApiSlice = apiSlice.injectEndpoints({
         url: `/servers/${serverId}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Server"],
+      invalidatesTags: [{ type: "Server", id: "LIST" }],
     }),
     updateServer: builder.mutation({
       query: ({ serverId, credentials }) => ({
@@ -34,9 +39,10 @@ export const serversApiSlice = apiSlice.injectEndpoints({
       ],
     }),
     generateTokenForServer: builder.mutation({
-      query: () => ({
+      query: (tokenName) => ({
         url: "/generate-token",
         method: "POST",
+        body: { token_name: tokenName },
       }),
     }),
   }),

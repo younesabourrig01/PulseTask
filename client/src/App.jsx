@@ -12,6 +12,7 @@ import { ProtectedRoute } from "./Components/ProtectedRoute";
 import { TeamGuard } from "./Components/TeamGuard";
 import { TeamLobby } from "./Pages/Team/TeamLobby";
 import { UserProfile } from "./Pages/Profile/UserProfile";
+import { ServersPage } from "./Pages/Servers/ServersPage";
 
 import { TeamWorkspace } from "./Pages/Team/TeamWorkspace";
 
@@ -24,6 +25,7 @@ function App() {
     pathname === "/profile" ||
     pathname === "/onboarding" ||
     pathname === "/team" ||
+    pathname === "/servers" ||
     pathname === "/forgot-password";
 
   return (
@@ -43,6 +45,7 @@ function App() {
             <Route path="/profile" element={<UserProfile />} />
             <Route element={<TeamGuard />}>
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/servers" element={<ServersPage />} />
               <Route path="/team" element={<TeamWorkspace />} />
             </Route>
           </Route>
