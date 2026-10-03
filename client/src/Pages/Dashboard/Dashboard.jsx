@@ -10,12 +10,7 @@ import {
   Pie,
   Cell,
 } from "recharts";
-import { Copy, Plus, Server } from "lucide-react";
-import {
-  useTeamInfoQuery,
-  useGenerateInvCodeMutation,
-} from "../../features/team/teamApiSlice";
-import { toast } from "sonner";
+import { Server } from "lucide-react";
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
 
@@ -141,32 +136,12 @@ const CustomTooltip = ({ active, payload, label }) => {
 // ─── Main Dashboard ───────────────────────────────────────────────────────────
 
 export const Dashboard = () => {
-  const { data: teamResponse } = useTeamInfoQuery();
-  const [generateInvCode, { isLoading: isGeneratingCode }] = useGenerateInvCodeMutation();
   const [blink, setBlink] = useState(true);
 
   useEffect(() => {
     const id = setInterval(() => setBlink((b) => !b), 700);
     return () => clearInterval(id);
   }, []);
-
-  const handleCopyInviteCode = async () => {
-    try {
-      let code = teamResponse?.data?.invite_code;
-      if (!code) {
-        const res = await generateInvCode().unwrap();
-        code = res.invite_code;
-        toast.success("New invite code generated!");
-      }
-      if (code) {
-        await navigator.clipboard.writeText(code);
-        toast.success(`Invite code copied: ${code}`);
-      }
-    } catch (err) {
-      console.error("Invite code error", err);
-      toast.error("Failed to copy invite code");
-    }
-  };
 
   return (
     <div className="px-4 pb-16 pt-6 sm:px-6 lg:px-8">
@@ -325,26 +300,6 @@ export const Dashboard = () => {
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Footer Actions */}
-      <div className="col-span-full flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-t border-white/10 pt-4">
-        <p className="text-xs text-gray-500">PulseTask · Cloud Server &amp; Script Automation</p>
-        <div className="flex gap-2">
-          <button
-            type="button"
-            onClick={handleCopyInviteCode}
-            disabled={isGeneratingCode}
-            className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-[#111827] px-3.5 py-2 text-xs font-semibold text-gray-300 transition hover:border-white/20 hover:text-white"
-          >
-            <Copy className="h-3.5 w-3.5" /> Invite Code
-          </button>
-          <button
-            type="button"
-            className="inline-flex items-center gap-2 rounded-lg bg-[#5b5bf5] px-3.5 py-2 text-xs font-semibold text-white transition hover:bg-[#4a4af0]"
-          >
-            <Plus className="h-3.5 w-3.5" /> Add Server
-          </button>
         </div>
       </div>
     </div>
