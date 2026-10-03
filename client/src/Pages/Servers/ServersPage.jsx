@@ -51,7 +51,7 @@ export const ServersPage = () => {
     catch { toast.error("Could not copy the token."); }
   };
 
-  return <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+  return <div className="px-4 pb-16 pt-6 sm:px-6 lg:px-8">
     <div className="mb-7 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#7169ff]">Infrastructure</p><h1 className="mt-1 text-2xl font-bold tracking-tight text-white">Servers</h1><p className="mt-1 text-sm text-gray-400">Manage the servers available to your team.</p></div>
       <div className="flex flex-wrap gap-2"><button type="button" onClick={handleGenerateToken} disabled={isGeneratingToken} className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-[#111827] px-3.5 py-2.5 text-sm font-semibold text-gray-200 hover:bg-white/5 disabled:opacity-50">{isGeneratingToken ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <KeyRound className="h-4 w-4" />}Generate token</button><button type="button" onClick={() => setIsFormOpen(true)} className="inline-flex items-center gap-2 rounded-lg bg-[#5b5bf5] px-3.5 py-2.5 text-sm font-semibold text-white hover:bg-[#6b6bff]"><Plus className="h-4 w-4" />Add server</button></div>
