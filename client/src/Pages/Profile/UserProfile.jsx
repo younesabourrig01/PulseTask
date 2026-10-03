@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
@@ -126,6 +126,11 @@ export const UserProfile = () => {
   const [avatarPreview, setAvatarPreview] = useState(null);
   const [avatarFile, setAvatarFile] = useState(null);
   const [removeAvatar, setRemoveAvatar] = useState(false);
+  const [avatarLoadError, setAvatarLoadError] = useState(false);
+
+  useEffect(() => {
+    setAvatarLoadError(false);
+  }, [currentUser?.avatar, avatarPreview]);
 
   // --- Password state ---
   const [passwordForm, setPasswordForm] = useState({
@@ -283,19 +288,21 @@ export const UserProfile = () => {
   const avatarUrl = removeAvatar
     ? null
     : (avatarPreview || getAvatarUrl(currentUser?.avatar));
+  const showAvatarImage = Boolean(avatarUrl && !avatarLoadError);
 
   return (
-    <div className="px-4 pb-16 pt-8 sm:px-6 lg:px-8">
-      <div className="mx-auto w-full max-w-2xl space-y-5">
+    <div className="px-4 pb-16 pt-6 sm:px-6 lg:px-8">
+      <div className="w-full space-y-6">
         {/* ── Header / Avatar ─────────────────────────────────── */}
         <SectionCard>
           <div className="flex flex-col items-center gap-5 sm:flex-row sm:items-start">
             {/* Avatar */}
             <div className="relative">
-              {avatarUrl ? (
+              {showAvatarImage ? (
                 <img
                   src={avatarUrl}
                   alt={currentUser?.name || "User"}
+                  onError={() => setAvatarLoadError(true)}
                   className="h-24 w-24 rounded-2xl border-2 border-[#5b5bf5]/40 object-cover shadow-lg shadow-[#5b5bf5]/20"
                 />
               ) : (
@@ -378,32 +385,35 @@ export const UserProfile = () => {
           </div>
         </SectionCard>
 
-        {/* ── Profile Information ──────────────────────────────── */}
-        <SectionCard>
-          <SectionTitle icon={User}>Profile Information</SectionTitle>
-          <form onSubmit={handleSaveProfile} className="space-y-4">
-            {/* Explicit Avatar Image Input in Edit Mode */}
-            {isEditing && (
-              <div className="rounded-xl border border-white/10 bg-[#0c1118] p-4">
-                <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400">
-                  Profile Avatar Image
-                </label>
+        {/* ── 2-Column Grid on desktop ─────────────────────────── */}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          {/* ── Profile Information ──────────────────────────────── */}
+          <SectionCard>
+            <SectionTitle icon={User}>Profile Information</SectionTitle>
+            <form onSubmit={handleSaveProfile} className="space-y-4">
+              {/* Explicit Avatar Image Input in Edit Mode */}
+              {isEditing && (
+                <div className="rounded-xl border border-white/10 bg-[#0c1118] p-4">
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400">
+                    Profile Avatar Image
+                  </label>
 
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                  {/* Thumbnail Preview */}
-                  <div className="relative shrink-0">
-                    {avatarUrl ? (
-                      <img
-                        src={avatarUrl}
-                        alt="Avatar Preview"
-                        className="h-16 w-16 rounded-xl border-2 border-[#5b5bf5]/50 object-cover shadow-sm"
-                      />
-                    ) : (
-                      <div className="grid h-16 w-16 place-items-center rounded-xl border border-white/10 bg-[#141922] text-lg font-bold text-gray-400">
-                        {getInitials(profileForm.name || currentUser?.name)}
-                      </div>
-                    )}
-                  </div>
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+                    {/* Thumbnail Preview */}
+                    <div className="relative shrink-0">
+                      {showAvatarImage ? (
+                        <img
+                          src={avatarUrl}
+                          alt="Avatar Preview"
+                          onError={() => setAvatarLoadError(true)}
+                          className="h-16 w-16 rounded-xl border-2 border-[#5b5bf5]/50 object-cover shadow-sm"
+                        />
+                      ) : (
+                        <div className="grid h-16 w-16 place-items-center rounded-xl border border-white/10 bg-[#141922] text-lg font-bold text-gray-400">
+                          {getInitials(profileForm.name || currentUser?.name)}
+                        </div>
+                      )}
+                    </div>
 
                   {/* Buttons and guidance */}
                   <div className="flex-1 space-y-2">
@@ -516,8 +526,10 @@ export const UserProfile = () => {
           </form>
         </SectionCard>
 
-        {/* ── Change Password ─────────────────────────────────── */}
-        <SectionCard>
+        {/* ── Security & Danger Zone Column ───────────────────── */}
+        <div className="space-y-6">
+          {/* ── Change Password ───────────────────────────────── */}
+          <SectionCard>
           <SectionTitle icon={Lock}>Change Password</SectionTitle>
           <form onSubmit={handleChangePassword} className="space-y-4">
             <FormField
@@ -663,6 +675,8 @@ export const UserProfile = () => {
             </form>
           )}
         </SectionCard>
+          </div>
+        </div>
       </div>
     </div>
   );

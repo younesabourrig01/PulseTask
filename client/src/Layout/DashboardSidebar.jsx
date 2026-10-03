@@ -1,12 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import {
-  LayoutDashboard,
-  Users,
-  User,
-  LogOut,
-} from "lucide-react";
+import { LayoutDashboard, Users, User, LogOut } from "lucide-react";
 import { selectCurrentUser } from "../features/auth/authSlice";
 import { useLogoutMutation } from "../features/auth/authApiSlice";
 import { getAvatarUrl, getInitials } from "../utils/avatar";
@@ -19,8 +14,13 @@ export const DashboardSidebar = ({ isOpen, onClose }) => {
   const currentUser = useSelector(selectCurrentUser);
   const [logout, { isLoading: isLoggingOut }] = useLogoutMutation();
 
+  const [avatarError, setAvatarError] = useState(false);
   const avatarUrl = getAvatarUrl(currentUser?.avatar);
   const initials = getInitials(currentUser?.name);
+
+  useEffect(() => {
+    setAvatarError(false);
+  }, [currentUser?.avatar]);
 
   const handleLogout = async () => {
     try {
@@ -28,7 +28,7 @@ export const DashboardSidebar = ({ isOpen, onClose }) => {
       toast.success(response?.message || "Logged out successfully!");
     } catch (err) {
       toast.error(
-        err?.data?.message || err?.error || err?.message || "Logout failed."
+        err?.data?.message || err?.error || err?.message || "Logout failed.",
       );
     } finally {
       navigate("/");
@@ -55,7 +55,7 @@ export const DashboardSidebar = ({ isOpen, onClose }) => {
       active: location.pathname === "/profile",
     },
     {
-      name: "Team Workspace",
+      name: "Team",
       to: "/team",
       icon: Users,
       active: location.pathname === "/team",
@@ -86,7 +86,11 @@ export const DashboardSidebar = ({ isOpen, onClose }) => {
             onClick={handleNavClick}
             className="flex items-center gap-2.5 transition hover:opacity-90"
           >
-            <img src={Icon} alt="PulseTask Logo" className="h-6 w-6 object-contain" />
+            <img
+              src={Icon}
+              alt="PulseTask Logo"
+              className="h-6 w-6 object-contain"
+            />
             <span className="text-base font-extrabold tracking-wider uppercase text-white">
               Pulse<span className="text-[#5b5bf5]">Task</span>
             </span>
@@ -115,7 +119,11 @@ export const DashboardSidebar = ({ isOpen, onClose }) => {
                   <div className="flex items-center gap-3">
                     <IconComp
                       size={18}
-                      className={item.active ? "text-white" : "text-gray-400 group-hover:text-white"}
+                      className={
+                        item.active
+                          ? "text-white"
+                          : "text-gray-400 group-hover:text-white"
+                      }
                     />
                     <span>{item.name}</span>
                   </div>
@@ -131,10 +139,11 @@ export const DashboardSidebar = ({ isOpen, onClose }) => {
             <div className="flex items-center gap-3">
               {/* Avatar */}
               <div className="relative shrink-0">
-                {avatarUrl ? (
+                {avatarUrl && !avatarError ? (
                   <img
                     src={avatarUrl}
                     alt={currentUser?.name || "Profile"}
+                    onError={() => setAvatarError(true)}
                     className="h-9 w-9 rounded-xl border border-[#5b5bf5]/40 object-cover shadow-sm"
                   />
                 ) : (

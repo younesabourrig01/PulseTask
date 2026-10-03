@@ -31,6 +31,39 @@ import { apiSlice } from "../../app/api/apiSlice";
 import { getAvatarUrl, getInitials } from "../../utils/avatar";
 import { toast } from "sonner";
 
+const MemberAvatar = ({ member, isMemberOwner }) => {
+  const [imgError, setImgError] = useState(false);
+  const avatarUrl = getAvatarUrl(member?.avatar);
+  const initials = getInitials(member?.name);
+
+  useEffect(() => {
+    setImgError(false);
+  }, [member?.avatar]);
+
+  if (avatarUrl && !imgError) {
+    return (
+      <img
+        src={avatarUrl}
+        alt={member.name || "Member"}
+        onError={() => setImgError(true)}
+        className="h-9 w-9 rounded-xl border border-white/10 object-cover"
+      />
+    );
+  }
+
+  return (
+    <div
+      className={`grid h-9 w-9 place-items-center rounded-xl text-xs font-bold text-white shadow-sm ${
+        isMemberOwner
+          ? "bg-gradient-to-tr from-amber-500 to-amber-600"
+          : "bg-gradient-to-tr from-[#5b5bf5] to-[#8b5cf6]"
+      }`}
+    >
+      {initials}
+    </div>
+  );
+};
+
 export const TeamWorkspace = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -203,7 +236,7 @@ export const TeamWorkspace = () => {
 
   return (
     <div className="px-4 pb-16 pt-6 sm:px-6 lg:px-8">
-      <div className="mx-auto w-full max-w-7xl space-y-6">
+      <div className="w-full space-y-6">
             {/* Loading State */}
             {isTeamLoading ? (
               <div className="flex h-64 flex-col items-center justify-center rounded-2xl border border-white/10 bg-[#111827]">
@@ -533,23 +566,10 @@ export const TeamWorkspace = () => {
                               {/* Member Name + Avatar */}
                               <td className="px-4 py-3.5">
                                 <div className="flex items-center gap-3">
-                                  {avatarUrl ? (
-                                    <img
-                                      src={avatarUrl}
-                                      alt={member.name || "Member"}
-                                      className="h-9 w-9 rounded-xl border border-white/10 object-cover"
-                                    />
-                                  ) : (
-                                    <div
-                                      className={`grid h-9 w-9 place-items-center rounded-xl text-xs font-bold text-white shadow-sm ${
-                                        isMemberOwner
-                                          ? "bg-gradient-to-tr from-amber-500 to-amber-600"
-                                          : "bg-gradient-to-tr from-[#5b5bf5] to-[#8b5cf6]"
-                                      }`}
-                                    >
-                                      {initials}
-                                    </div>
-                                  )}
+                                  <MemberAvatar
+                                    member={member}
+                                    isMemberOwner={isMemberOwner}
+                                  />
 
                                   <div>
                                     <p className="flex items-center gap-1.5 font-bold text-white">
