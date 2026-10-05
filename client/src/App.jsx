@@ -13,6 +13,7 @@ import { TeamGuard } from "./Components/TeamGuard";
 import { TeamLobby } from "./Pages/Team/TeamLobby";
 import { UserProfile } from "./Pages/Profile/UserProfile";
 import { ServersPage } from "./Pages/Servers/ServersPage";
+import { ScriptsPage } from "./Pages/Scripts/ScriptsPage";
 
 import { TeamWorkspace } from "./Pages/Team/TeamWorkspace";
 
@@ -26,6 +27,7 @@ function App() {
     pathname === "/onboarding" ||
     pathname === "/team" ||
     pathname === "/servers" ||
+    pathname === "/scripts" ||
     pathname === "/forgot-password";
 
   return (
@@ -46,6 +48,7 @@ function App() {
             <Route element={<TeamGuard />}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/servers" element={<ServersPage />} />
+              <Route path="/scripts" element={<ScriptsPage />} />
               <Route path="/team" element={<TeamWorkspace />} />
             </Route>
           </Route>

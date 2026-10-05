@@ -2,7 +2,7 @@
 use App\Http\Controllers\api\AuthController;
 use App\Http\Controllers\api\ScriptRunController;
 use App\Http\Controllers\api\ServerController;
-use App\Models\Script;
+use App\Http\Controllers\api\ScriptController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\TeamController;
 
@@ -34,11 +34,11 @@ Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
     Route::post('/generate-token', [ServerController::class, 'generateToken']);
 
     #--script endpoints-----------------------------------------------------------------------#
-    Route::get('/scripts', [Script::class, 'index']);
-    Route::get('/scripts/{script}', [Script::class, 'show']);
-    Route::post('/scripts', [Script::class, 'store']);
-    Route::patch('/scripts/{script}', [Script::class, 'update']);
-    Route::delete('/scripts/{script}', [Script::class, 'delete']);
+    Route::get('/scripts', [ScriptController::class, 'index']);
+    Route::get('/scripts/{script}', [ScriptController::class, 'show']);
+    Route::post('/scripts', [ScriptController::class, 'store']);
+    Route::patch('/scripts/{script}', [ScriptController::class, 'update']);
+    Route::delete('/scripts/{script}', [ScriptController::class, 'delete']);
 
     #--run script endpoints--------------------------------------------------------------------#
     //run script in the application interface

@@ -26,4 +26,9 @@ class Team extends Model
     {
         return $this->hasMany(Script::class);
     }
+
+    public function script(): HasMany
+    {
+        return $this->hasMany(Script::class);
+    }
 }

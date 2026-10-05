@@ -35,11 +35,11 @@ class ScriptController extends Controller
 
         $validated = $request->validate([
             'title' => 'required|string|min:3',
-            'script_slug' => 'required|string|unique:scripts, script_slug',
+            'script_slug' => 'required|string|unique:scripts,script_slug',
             'content' => 'required|string'
         ]);
 
-        $script = $user->team->script()->create($validated);
+        $script = $user->team->scripts()->create($validated);
 
         return response()->json([
             'status' => 'success',
@@ -79,7 +79,7 @@ class ScriptController extends Controller
         $script->delete();
 
         return response()->json([
-            'status' => 'sucsess',
+            'status' => 'success',
             'message' => 'script deleted',
             'script' => $script
         ]);

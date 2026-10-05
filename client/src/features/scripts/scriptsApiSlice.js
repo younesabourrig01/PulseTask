@@ -3,10 +3,20 @@ import { apiSlice } from "../../app/api/apiSlice";
 export const scriptApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getScripts: builder.query({
-      query: () => "scripts",
+      query: () => "/scripts",
+      providesTags: (result) => [
+        { type: "Script", id: "LIST" },
+        ...(result?.scripts?.data || result?.scripts || []).map(({ id }) => ({
+          type: "Script",
+          id,
+        })),
+      ],
     }),
     showScript: builder.query({
       query: (scriptId) => `/scripts/${scriptId}`,
+      providesTags: (result, error, scriptId) => [
+        { type: "Script", id: scriptId },
+      ],
     }),
     createScript: builder.mutation({
       query: (credentials) => ({
@@ -14,6 +24,7 @@ export const scriptApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: credentials,
       }),
+      invalidatesTags: [{ type: "Script", id: "LIST" }],
     }),
     updateScript: builder.mutation({
       query: ({ scriptId, credentials }) => ({
@@ -31,7 +42,7 @@ export const scriptApiSlice = apiSlice.injectEndpoints({
         url: `/scripts/${scriptId}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Script"],
+      invalidatesTags: [{ type: "Script", id: "LIST" }],
     }),
   }),
 });

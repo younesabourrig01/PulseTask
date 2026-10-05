@@ -10,6 +10,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Script extends Model
 {
+    protected $fillable = [
+        'team_id',
+        'title',
+        'script_slug',
+        'content',
+    ];
+
     public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class);
