@@ -3,7 +3,20 @@ import { apiSlice } from "../../app/api/apiSlice";
 export const serversApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getServers: builder.query({
-      query: () => "/servers",
+      query: (params) => {
+        if (!params) return "/servers";
+        if (typeof params === "string") {
+          return `/servers?search=${encodeURIComponent(params)}`;
+        }
+        const searchParams = new URLSearchParams();
+        Object.entries(params).forEach(([key, val]) => {
+          if (val !== undefined && val !== null && val !== "") {
+            searchParams.append(key, val);
+          }
+        });
+        const qs = searchParams.toString();
+        return qs ? `/servers?${qs}` : "/servers";
+      },
       providesTags: (result) => [
         { type: "Server", id: "LIST" },
         ...(result?.servers?.data || []).map(({ id }) => ({ type: "Server", id })),

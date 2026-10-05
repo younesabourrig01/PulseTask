@@ -14,8 +14,20 @@ class ServerController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
+        $search = trim($request->query('search', ''));
 
-        $servers = Server::where('team_id', $user->team_id)->paginate(10);
+        $query = Server::where('team_id', $user->team_id);
+
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('ip_address', 'like', "%{$search}%")
+                  ->orWhere('ssh_user', 'like', "%{$search}%")
+                  ->orWhere('status', 'like', "%{$search}%");
+            });
+        }
+
+        $servers = $query->paginate(10);
 
         return response()->json([
             'status' => 'success',
