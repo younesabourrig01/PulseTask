@@ -67,7 +67,7 @@ class ExecuteServerScript implements ShouldQueue
             } else {
                 $run->update([
                     'status' => 'failed',
-                    'output' => $outPut ?: 'Script exited with status code: {$exitStatus}'
+                    'output' => $outPut ?: "Script exited with status code: {$exitStatus}"
                 ]);
 
                 DiscordAlertService::send(

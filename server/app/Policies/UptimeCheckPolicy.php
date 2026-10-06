@@ -29,7 +29,7 @@ class UptimeCheckPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return !empty($user->team_id);
     }
 
     /**

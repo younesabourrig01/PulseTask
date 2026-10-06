@@ -10,6 +10,16 @@ use Override;
 class ScriptRun extends Model
 {
     use Prunable;
+
+    protected $fillable = [
+        'script_id',
+        'server_id',
+        'user_id',
+        'status',
+        'output',
+        'error_output',
+    ];
+
     public function prunable()
     {
         return static::where('created_at', '<=', now()->subDays(30));
