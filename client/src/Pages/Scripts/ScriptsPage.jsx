@@ -6,6 +6,7 @@ import {
   Trash2,
   Edit3,
   Eye,
+  Play,
   Copy,
   Check,
   LoaderCircle,
@@ -23,6 +24,7 @@ import {
   useUpdateScriptMutation,
   useDestroyScriptMutation,
 } from "../../features/scripts/scriptsApiSlice";
+import { RunScriptModal } from "./RunScriptModal";
 
 const emptyForm = {
   title: "",
@@ -80,6 +82,7 @@ export const ScriptsPage = () => {
   const [editForm, setEditForm] = useState({ title: "", script_slug: "", content: "" });
   const [searchQuery, setSearchQuery] = useState("");
   const [copiedCode, setCopiedCode] = useState(false);
+  const [runningScript, setRunningScript] = useState(null);
 
   // Extract scripts array safely from paginated or array response
   const scripts = useMemo(() => {
@@ -358,6 +361,16 @@ export const ScriptsPage = () => {
                       {/* Actions */}
                       <td className="px-5 py-4 text-right">
                         <div className="flex justify-end gap-1">
+                          {/* Run script */}
+                          <button
+                            type="button"
+                            onClick={() => setRunningScript(script)}
+                            className="rounded-lg p-2 text-emerald-400 transition hover:bg-emerald-500/10 hover:text-emerald-300"
+                            title={`Execute ${script.title}`}
+                          >
+                            <Play className="h-4 w-4 fill-current" />
+                          </button>
+
                           {/* View script detail */}
                           <button
                             type="button"
@@ -673,6 +686,17 @@ export const ScriptsPage = () => {
                   <button
                     type="button"
                     onClick={() => {
+                      setRunningScript(selectedScript);
+                      setViewingScriptId(null);
+                    }}
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-[#5b5bf5] px-3.5 py-2 text-xs font-semibold text-white shadow-lg shadow-[#5b5bf5]/20 transition hover:bg-[#6b6bff]"
+                  >
+                    <Play className="h-3.5 w-3.5 fill-current" />
+                    Run Script
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
                       setEditingScript(selectedScript);
                       setViewingScriptId(null);
                     }}
@@ -697,6 +721,14 @@ export const ScriptsPage = () => {
             )}
           </div>
         </div>
+      )}
+
+      {/* ── RUN SCRIPT MODAL ──────────────────────────────────────────── */}
+      {runningScript && (
+        <RunScriptModal
+          script={runningScript}
+          onClose={() => setRunningScript(null)}
+        />
       )}
     </div>
   );

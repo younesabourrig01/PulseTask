@@ -19,6 +19,7 @@ import {
   useGetServersQuery,
   useShowServerQuery,
 } from "../../features/servers/serversApiSlice";
+import { UptimeCheckManager } from "./UptimeCheckManager";
 
 const emptyForm = {
   name: "",
@@ -480,12 +481,15 @@ export const ServersPage = () => {
         </div>
       )}
 
-      {/* ── Server Details Modal ─────────────────────────────────────── */}
+      {/* ── Server Details & Uptime Modal ─────────────────────────────── */}
       {selectedServerId && (
         <div className="fixed inset-0 z-50 grid place-items-center bg-black/70 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#111827] p-5 shadow-2xl">
+          <div className="max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-2xl border border-white/10 bg-[#111827] p-6 shadow-2xl">
             <div className="flex items-center justify-between border-b border-white/10 pb-3">
-              <h2 className="font-semibold text-white">Server details</h2>
+              <div>
+                <h2 className="font-semibold text-white">Server & Monitor Details</h2>
+                <p className="text-xs text-gray-400">View configuration and manage uptime checks.</p>
+              </div>
               <button
                 type="button"
                 onClick={() => setSelectedServerId(null)}
@@ -496,27 +500,32 @@ export const ServersPage = () => {
             </div>
             {isServerLoading ? (
               <div className="grid min-h-40 place-items-center">
-                <LoaderCircle className="h-5 w-5 animate-spin text-gray-400" />
+                <LoaderCircle className="h-5 w-5 animate-spin text-[#7169ff]" />
               </div>
             ) : selectedServer ? (
-              <dl className="mt-4 divide-y divide-white/5 text-sm">
-                {[
-                  ["Name", selectedServer.name],
-                  ["IP address", selectedServer.ip_address],
-                  ["SSH user", selectedServer.ssh_user],
-                  ["Status", selectedServer.status],
-                ].map(([label, value]) => (
-                  <div
-                    key={label}
-                    className="flex items-center justify-between gap-4 py-3"
-                  >
-                    <dt className="text-gray-400">{label}</dt>
-                    <dd className="text-right font-medium text-white">
-                      {value || "—"}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
+              <>
+                <dl className="mt-4 divide-y divide-white/5 text-sm">
+                  {[
+                    ["Name", selectedServer.name],
+                    ["IP address", selectedServer.ip_address],
+                    ["SSH user", selectedServer.ssh_user],
+                    ["Status", selectedServer.status],
+                  ].map(([label, value]) => (
+                    <div
+                      key={label}
+                      className="flex items-center justify-between gap-4 py-2.5"
+                    >
+                      <dt className="text-xs text-gray-400">{label}</dt>
+                      <dd className="font-mono text-xs font-medium text-white">
+                        {value || "—"}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+
+                {/* Uptime Monitors & Instant Ping Manager */}
+                <UptimeCheckManager serverId={selectedServerId} />
+              </>
             ) : null}
           </div>
         </div>

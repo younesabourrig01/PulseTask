@@ -28,17 +28,18 @@ export const serversApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: credentials,
       }),
-      invalidatesTags: [{ type: "Server", id: "LIST" }],
+      invalidatesTags: [{ type: "Server", id: "LIST" }, "Dashboard"],
     }),
     showServer: builder.query({
       query: (serverId) => `/servers/${serverId}`,
+      providesTags: (result, error, serverId) => [{ type: "Server", id: serverId }],
     }),
     destroyServer: builder.mutation({
       query: (serverId) => ({
         url: `/servers/${serverId}`,
         method: "DELETE",
       }),
-      invalidatesTags: [{ type: "Server", id: "LIST" }],
+      invalidatesTags: [{ type: "Server", id: "LIST" }, "Dashboard"],
     }),
     updateServer: builder.mutation({
       query: ({ serverId, credentials }) => ({
@@ -47,8 +48,9 @@ export const serversApiSlice = apiSlice.injectEndpoints({
         body: credentials,
       }),
       invalidatesTags: (result, error, { serverId }) => [
-        { type: "Server", id: serverId }, // Refetches specific server details
-        { type: "Server", id: "LIST" }, // Refetches server list
+        { type: "Server", id: serverId },
+        { type: "Server", id: "LIST" },
+        "Dashboard",
       ],
     }),
     generateTokenForServer: builder.mutation({
@@ -58,6 +60,67 @@ export const serversApiSlice = apiSlice.injectEndpoints({
         body: { token_name: tokenName },
       }),
     }),
+
+    // ── Uptime Checks & Ping Endpoints ────────────────────────────────
+    getUptimeChecks: builder.query({
+      query: (serverId) => `/servers/${serverId}/uptime-checks`,
+      providesTags: (result, error, serverId) => [
+        { type: "UptimeCheck", id: serverId },
+      ],
+    }),
+    createUptimeCheck: builder.mutation({
+      query: ({ serverId, ...body }) => ({
+        url: `/servers/${serverId}/uptime-checks`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: (result, error, { serverId }) => [
+        { type: "UptimeCheck", id: serverId },
+        { type: "Server", id: serverId },
+        { type: "Server", id: "LIST" },
+        "Dashboard",
+      ],
+    }),
+    updateUptimeCheck: builder.mutation({
+      query: ({ checkId, ...body }) => ({
+        url: `/uptime-checks/${checkId}`,
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: (result, error, { serverId }) => [
+        { type: "UptimeCheck", id: serverId },
+        { type: "Server", id: serverId },
+        { type: "Server", id: "LIST" },
+        "Dashboard",
+      ],
+    }),
+    destroyUptimeCheck: builder.mutation({
+      query: ({ checkId }) => ({
+        url: `/uptime-checks/${checkId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result, error, { serverId }) => [
+        { type: "UptimeCheck", id: serverId },
+        { type: "Server", id: serverId },
+        { type: "Server", id: "LIST" },
+        "Dashboard",
+      ],
+    }),
+    pingUptimeCheck: builder.mutation({
+      query: ({ checkId }) => ({
+        url: `/uptime-checks/${checkId}/ping`,
+        method: "POST",
+      }),
+      invalidatesTags: (result, error, { serverId }) => [
+        { type: "UptimeCheck", id: serverId },
+        { type: "Server", id: serverId },
+        { type: "Server", id: "LIST" },
+        "Dashboard",
+      ],
+    }),
+    getPingHistory: builder.query({
+      query: (serverId) => `/servers/${serverId}/ping-history`,
+    }),
   }),
 });
 
@@ -66,5 +129,12 @@ export const {
   useCreateServerMutation,
   useShowServerQuery,
   useDestroyServerMutation,
+  useUpdateServerMutation,
   useGenerateTokenForServerMutation,
+  useGetUptimeChecksQuery,
+  useCreateUptimeCheckMutation,
+  useUpdateUptimeCheckMutation,
+  useDestroyUptimeCheckMutation,
+  usePingUptimeCheckMutation,
+  useGetPingHistoryQuery,
 } = serversApiSlice;
