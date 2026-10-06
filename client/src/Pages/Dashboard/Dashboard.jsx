@@ -405,9 +405,13 @@ export const Dashboard = () => {
                     $ awaiting script execution...
                   </p>
                 )}
-                <p className="mt-1 text-[10px] text-emerald-400">
-                  {blink ? "█" : " "}
-                </p>
+                <div className="mt-1 flex h-4 items-center">
+                  <span
+                    className={`inline-block h-3 w-1.5 rounded-[1px] bg-emerald-400 transition-opacity duration-75 ${
+                      blink ? "opacity-100" : "opacity-0"
+                    }`}
+                  />
+                </div>
               </div>
             </div>
           </div>
