@@ -12,7 +12,7 @@ const docs = defineCollection({
   }),
 });
 
-const blog = defineCollection({
+const blogs = defineCollection({
   loader: glob({ pattern: "**/*.{md, mdx}", base: "../src/content/blog" }),
   schema: z.object({
     title: z.string(),
@@ -23,4 +23,4 @@ const blog = defineCollection({
   }),
 });
 
-export const collections = { docs, blog };
+export const collections = { docs, blogs };

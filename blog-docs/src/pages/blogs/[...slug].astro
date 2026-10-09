@@ -1,0 +1,39 @@
+---
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const blogs = await getCollection("blogs");
+
+  return blogs.map((blog) => ({
+    params: { slug: blog.id },
+    props: { blog },
+  }));
+}
+
+const { blog } = Astro.props;
+const { Content } = await render(blog);
+---
+
+<html lang="en">
+  <head>
+    <title>{blog.data.title} | PulseTask Blogs</title>
+  </head>
+  <body class="blogs-layout">
+    <nav>
+      <a href="/docs">Blogs Root</a>
+      <span>Date of publish: {blog.data.pubDate}</span>
+      <span>Author: {blog.data.author}</span>
+    </nav>
+    <main>
+      <p>
+        Tags : {
+          blog.data.tags.map((t: any) => {
+            t;
+          })
+        }
+      </p>
+      <h1>{blog.data.title}</h1>
+      <Content />
+    </main>
+  </body>
+</html>
