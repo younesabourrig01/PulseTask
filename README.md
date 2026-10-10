@@ -1,5 +1,14 @@
 # PulseTask
 
+[![PHP](https://img.shields.io/badge/PHP-8.3%2B-777BB4?logo=php&logoColor=white)](https://www.php.net/)
+[![Laravel](https://img.shields.io/badge/Laravel-13-FF2D20?logo=laravel&logoColor=white)](https://laravel.com/)
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)](https://vite.dev/)
+[![Astro](https://img.shields.io/badge/Astro-7-BC52EE?logo=astro&logoColor=white)](https://astro.build/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![SQLite](https://img.shields.io/badge/SQLite-Storage-003B57?logo=sqlite&logoColor=white)](https://www.sqlite.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-22%2B-5FA04E?logo=node.js&logoColor=white)](https://nodejs.org/)
+
 PulseTask is a team-based infrastructure dashboard for tracking servers, checking service uptime, and running saved scripts remotely over SSH.
 
 ## What it does
@@ -11,11 +20,13 @@ PulseTask is a team-based infrastructure dashboard for tracking servers, checkin
 - Track script-run status and output.
 - Authenticate users with Laravel Sanctum; password-reset OTP emails are supported.
 - Send optional Discord alerts and broadcast status updates.
+- Browse project blogs and documentation through a dedicated Astro service.
 
 ## Stack
 
-- **Frontend:** React, Vite, Redux Toolkit, Tailwind CSS
+- **Dashboard:** React, Vite, Redux Toolkit, Tailwind CSS
 - **Backend:** Laravel 13, PHP 8.3+, Sanctum, queues, Reverb
+- **Blogs & docs:** Astro 7
 - **Storage:** SQLite by default (MySQL can be configured)
 
 ## Project layout
@@ -23,6 +34,7 @@ PulseTask is a team-based infrastructure dashboard for tracking servers, checkin
 ```text
 client/  React dashboard
 server/  Laravel API, jobs, scheduler, and database migrations
+blog-docs/  Astro-powered blogs and documentation site
 ```
 
 ## Local setup
@@ -62,6 +74,20 @@ npm run dev
 
 The frontend currently calls `http://localhost:8000/api`, so keep the Laravel server running on port 8000 during development.
 
+### 3. Start blogs and documentation
+
+```bash
+cd blog-docs
+npm install
+npm run dev
+```
+
+The Astro site is served at `http://localhost:4321` by default.
+
+### Windows launcher
+
+On Windows, run `start.bat` from the project root to start all five local services: the Laravel API, queue worker, scheduler, React dashboard, and Astro blogs/docs site.
+
 ## Useful commands
 
 ```bash
@@ -73,6 +99,9 @@ php artisan db:seed --class=StartDataSeeder
 # From client/
 npm run build
 npm run lint
+
+# From blog-docs/
+npm run build
 ```
 
 `pulse:check-servers` is scheduled to run every minute. It requires both the scheduler and queue worker in a local environment.

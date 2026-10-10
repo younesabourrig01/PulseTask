@@ -60,7 +60,7 @@ echo   * Queue Worker:        Active (processing script runs)
 echo   * Scheduler:           Active (checking server uptimes)
 echo.
 echo Leave the opened terminal windows open while working.
-echo To stop all services at once, run: stop.bat
+echo To stop all services at once, just close opened windows
 echo ==========================================================
 echo.
 pause
