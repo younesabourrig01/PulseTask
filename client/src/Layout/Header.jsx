@@ -4,11 +4,18 @@ import { FaGithub } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import Icon from "../assets/pulsetask-icon.svg";
 
+const docs_href = import.meta.env.VITE_DOCS_URL;
+const blogs_href = import.meta.env.VITE_BLOGS_URL;
+
 const navLinks = [
   { label: "Platform", to: "/", icon: Layers3 },
-  { label: "Documentation", href: "#", icon: BookOpen },
+  {
+    label: "Documentation",
+    href: docs_href,
+    icon: BookOpen,
+  },
   { label: "Open Source", to: "/open-source", icon: FaGithub },
-  { label: "Blog", href: "#", icon: Newspaper },
+  { label: "Blog", href: blogs_href, icon: Newspaper },
 ];
 
 export const Header = () => {
@@ -46,7 +53,7 @@ export const Header = () => {
             <React.Fragment key={navLink.label}>
               {renderNavLink(
                 navLink,
-                "flex items-center gap-2 text-xs uppercase tracking-wider font-medium text-gray-300 hover:text-white transition-colors"
+                "flex items-center gap-2 text-xs uppercase tracking-wider font-medium text-gray-300 hover:text-white transition-colors",
               )}
             </React.Fragment>
           ))}
@@ -94,7 +101,7 @@ export const Header = () => {
               <li key={navLink.label}>
                 {renderNavLink(
                   navLink,
-                  "flex items-center gap-3 rounded-md px-3 py-2.5 text-xs uppercase tracking-wider font-semibold text-gray-200 transition-colors hover:bg-white/10 hover:text-white"
+                  "flex items-center gap-3 rounded-md px-3 py-2.5 text-xs uppercase tracking-wider font-semibold text-gray-200 transition-colors hover:bg-white/10 hover:text-white",
                 )}
               </li>
             ))}
@@ -121,4 +128,3 @@ export const Header = () => {
     </header>
   );
 };
-
