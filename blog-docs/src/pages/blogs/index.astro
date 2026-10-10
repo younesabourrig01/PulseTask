@@ -1,0 +1,23 @@
+---
+import { getCollection } from "astro:content";
+
+const docs = await getCollection("blogs");
+---
+
+<html lang="en">
+  <head>
+    <title>Documentation</title>
+  </head>
+  <body>
+    <h1>All Documentation</h1>
+    <ul>
+      {
+        docs.map((blog) => (
+          <li>
+            <a href={`/docs/${blog.id}`}>{blog.data.title}</a>
+          </li>
+        ))
+      }
+    </ul>
+  </body>
+</html>
