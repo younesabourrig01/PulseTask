@@ -6,15 +6,15 @@ const docs = await getCollection("blogs");
 
 <html lang="en">
   <head>
-    <title>Documentation</title>
+    <title>Blogs</title>
   </head>
   <body>
-    <h1>All Documentation</h1>
+    <h1>All Blogs</h1>
     <ul>
       {
         docs.map((blog) => (
           <li>
-            <a href={`/docs/${blog.id}`}>{blog.data.title}</a>
+            <a href={`/blogs/${blog.id}`}>{blog.data.title}</a>
           </li>
         ))
       }

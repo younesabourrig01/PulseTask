@@ -26,11 +26,7 @@ const { Content } = await render(blog);
     </nav>
     <main>
       <p>
-        Tags : {
-          blog.data.tags.map((t: any) => {
-            t;
-          })
-        }
+        Tags :{blog.data.tags}
       </p>
       <h1>{blog.data.title}</h1>
       <Content />
