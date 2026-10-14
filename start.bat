@@ -46,7 +46,7 @@ echo [4/5] Launching Frontend Vite Server (localhost:5173)...
 start "PulseTask - Frontend (Vite)" cmd /k "cd /d ""%CLIENT_DIR%"" && title PulseTask - Frontend && npm run dev"
 
 echo [5/5] Launching Astro Blogs & Docs Server (localhost:4321)...
-start "PulseTask - Blogs & Docs (Astro)" cmd /k "cd /d ""%BLOG_DIR%"" && title PulseTask - Blogs & Docs && npm run dev"
+start "PulseTask - Blogs & Docs (Astro)" cmd /k "cd /d ""%BLOG_DIR%"" && title PulseTask - blog-docs && npm run dev"
 
 echo.
 echo ==========================================================
