@@ -1,0 +1,15 @@
+---
+const { id, title, pubDate, author, tags } = Astro.props;
+---
+
+<article>
+  <div class="card-m">
+    <span class="date">{new Date(pubDate).toLocaleDateString()}</span>
+    <div class="tags">
+      {tags.map((tag: string) => <span class="tag">#{tag}</span>)}
+    </div>
+  </div>
+  <h2><a href={`/blogs/${id}`}>{title}</a></h2>
+  <span class="excerpt">{author}</span>
+  <a href={`/blogs/${id}`} class="read-more">Read full article →</a>
+</article>
