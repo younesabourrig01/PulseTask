@@ -1,22 +1,40 @@
 ---
 import { getCollection } from "astro:content";
-const docs = await getCollection("blogs");
+import { BlogCard } from "../../components/BlogCard.astro";
+
+const blogs = await getCollection("blogs");
+
+const sortedBlogs = blogs.sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
 ---
 
 <html lang="en">
   <head>
-    <title>Blogs</title>
+    <title>PulseTask Feed & Blogs</title>
   </head>
   <body>
-    <h1>All Blogs</h1>
-    <ul>
+    <header class="feed-header">
+      <div class="container">
+        <h1>PulseTask Community Feed</h1>
+        <p>
+          Catch up on the latest architectural updates, release notes, and dev
+          logs.
+        </p>
+      </div>
+    </header>
+
+    <main class="feed-container">
       {
-        docs.map((blog) => (
-          <li>
-            <a href={`/blogs/${blog.id}`}>{blog.data.title}</a>
-          </li>
+        sortedBlogs.map((blog) => (
+          <BlogCard
+            title={blog.data.title}
+            pubDate={blog.data.pubDate}
+            tags={blog.data.tags}
+            id={blog.id}
+          />
         ))
       }
-    </ul>
+    </main>
   </body>
 </html>
