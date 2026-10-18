@@ -1,15 +1,12 @@
 import { defineCollection } from "astro:content";
 import { z } from "zod";
 import { glob } from "astro/loaders";
+import { docsSchema } from "@astrojs/starlight/schema";
+import { docsLoader } from "@astrojs/starlight/loaders";
 
 const docs = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "src/content/docs" }),
-  schema: z.object({
-    title: z.string(),
-    description: z.string(),
-    section: z.string(),
-    order: z.number().default(0),
-  }),
+  loader: docsLoader(),
+  schema: docsSchema(),
 });
 
 const blogs = defineCollection({
