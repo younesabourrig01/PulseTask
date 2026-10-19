@@ -4,20 +4,22 @@ import starlight from "@astrojs/starlight";
 export default defineConfig({
   integrations: [
     starlight({
-      title: "PulseTask Docs",
+      title: "PulseTask Documentation",
       social: [
         {
           icon: "github",
           label: "GitHub",
-          href: "https://github.com/username/repo",
+          href: "https://github.com/younesabourrig1ya/pulseTasks",
         },
-        { icon: "discord", label: "Discord", href: "https://discord.gg/..." },
       ],
       // Define your documentation sidebar categories here!
       sidebar: [
         {
           label: "Getting Started",
-          items: [{ slug: "api-getting-started", label: "Quick Start" }],
+          items: [
+            { slug: "first-page", label: "first page" },
+            { slug: "api-getting-started", label: "Quick Start" },
+          ],
         },
         {
           label: "API Reference",
