@@ -1,15 +1,27 @@
 ---
+interface Props { id: string; title: string; pubDate: Date; author: string; tags: string[]; }
 const { id, title, pubDate, author, tags } = Astro.props;
 ---
 
-<article>
-  <div class="card-m">
-    <span class="date">{new Date(pubDate).toLocaleDateString()}</span>
-    <div class="tags">
-      {tags.map((tag: string) => <span class="tag">#{tag}</span>)}
-    </div>
+<article class="blog-card">
+  <div class="card-meta">
+    <time datetime={pubDate.toISOString()}>{pubDate.toLocaleDateString("en", { dateStyle: "medium" })}</time>
+    <div class="tags">{tags.map((tag) => <span>#{tag}</span>)}</div>
   </div>
   <h2><a href={`/blogs/${id}`}>{title}</a></h2>
-  <span class="excerpt">{author}</span>
-  <a href={`/blogs/${id}`} class="read-more">Read full article </a>
+  <p class="author">By {author}</p>
+  <a href={`/blogs/${id}`} class="read-more">Read article <span aria-hidden="true">→</span></a>
 </article>
+
+<style>
+  .blog-card { display: grid; gap: 1rem; padding: 1.5rem; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); box-shadow: var(--shadow-card); }
+  .card-meta, .tags { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem 0.75rem; }
+  time, .author { color: var(--color-muted); font-size: 0.9rem; }
+  .tags { margin-left: auto; color: var(--color-accent); font-size: 0.8rem; font-weight: 700; }
+  h2 { margin: 0; font-size: clamp(1.3rem, 2vw, 1.65rem); line-height: 1.25; }
+  h2 a, .read-more { text-decoration: none; }
+  h2 a:hover, .read-more { color: var(--color-accent); }
+  .author { margin: -0.5rem 0 0; }
+  .read-more { font-weight: 700; }
+  .read-more:hover { color: var(--color-accent-strong); }
+</style>

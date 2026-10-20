@@ -1,0 +1,41 @@
+---
+import "../styles/global.css";
+
+interface Props { title: string; description?: string; }
+const { title, description = "Updates, release notes, and engineering notes from PulseTask." } = Astro.props;
+const appUrl = import.meta.env.PUBLIC_APP_URL ?? "http://localhost:5173";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/blogs" aria-label="PulseTask blog home">PulseTask</a>
+      <nav aria-label="Primary navigation">
+        <a href="/blogs" aria-current={Astro.url.pathname === "/blogs" ? "page" : undefined}>Blog</a>
+        <a href={appUrl}>Home</a>
+        <a href="/first-page">Documentation</a>
+      </nav>
+    </header>
+    <slot />
+    <footer>Built with care by the PulseTask team.</footer>
+  </body>
+</html>
+
+<style>
+  .site-header, footer { width: min(calc(100% - 2rem), var(--content-width)); margin-inline: auto; }
+  .site-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 4.5rem; }
+  .brand { color: var(--color-text); font-weight: 800; letter-spacing: -0.04em; text-decoration: none; }
+  nav { display: flex; gap: 1.25rem; }
+  nav a { color: var(--color-muted); font-size: 0.95rem; font-weight: 600; text-decoration: none; }
+  nav a:hover, nav a[aria-current="page"] { color: var(--color-accent); }
+  footer { padding-block: 2.5rem; color: var(--color-muted); font-size: 0.9rem; }
+  @media (max-width: 32rem) { .site-header { align-items: flex-start; flex-direction: column; justify-content: center; padding-block: 1rem; } }
+</style>
