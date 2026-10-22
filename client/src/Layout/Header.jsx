@@ -30,7 +30,7 @@ export const Header = () => {
         <span>{label}</span>
       </Link>
     ) : (
-      <a href={href} onClick={closeMenu} className={className}>
+      <a href={href} onClick={closeMenu} target="_blank" className={className}>
         <LinkIcon className="w-3.5 h-3.5" aria-hidden="true" />
         <span>{label}</span>
       </a>
