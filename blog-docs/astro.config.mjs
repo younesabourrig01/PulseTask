@@ -15,16 +15,19 @@ export default defineConfig({
       // Define your documentation sidebar categories here!
       sidebar: [
         {
-          label: "Getting Started",
+          label: "Introduction",
           items: [
-            { slug: "first-page", label: "first page" },
-            { slug: "api-getting-started", label: "Quick Start" },
+            { slug: "introduction", label: "PulseTask" },
+            { slug: "installation", label: "Installation & local development" },
+            { slug: "architecture", label: "Architecture & data model" },
+            { slug: "operations", label: "Monitoring, jobs & realtime" },
           ],
         },
         {
           label: "API Reference",
           items: [
-            // Add more markdown files here as you create them
+            { slug: "api-reference", label: "REST API" },
+            { slug: "security", label: "Security & production checklist" },
           ],
         },
       ],
